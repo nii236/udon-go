@@ -1,5 +1,11 @@
 package sample
 
-func Sample() {
-	println("Hello, World!")
+const Test = 1
+
+func Sample() int {
+	value := privateMethod()
+	return value
+}
+func privateMethod() int {
+	return 1
 }

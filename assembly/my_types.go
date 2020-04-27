@@ -7,10 +7,7 @@ type EventName string
 type UdonModuleName string
 type UdonMethodName string
 type ExternStr string
-type UdonTypeName struct {
-	Name      string
-	InitValue string
-}
+type UdonTypeName string
 
 type Addr int
 

@@ -1,6 +1,11 @@
 package assembly
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"strconv"
+	"strings"
+)
 
 type UdonAssembly struct {
 	ASM             string
@@ -9,17 +14,37 @@ type UdonAssembly struct {
 	LabelDict       map[LabelName]Addr
 	EventNames      []EventName
 	ExportVars      []VarName
-	VarTable        VarTable
-	DefFuncTable    DefFuncTable
-	UdonMethodTable UdonMethodTable
+	VarTable        *VarTable
+	DefFuncTable    *DefFuncTable
+	UdonMethodTable *UdonMethodTable
 	EnvVars         []VarName
+}
+
+func NewUdonAssembly(rdr io.Reader) (*UdonAssembly, error) {
+	umt, err := NewUdonMethodTable(rdr)
+	if err != nil {
+		return nil, fmt.Errorf("create udon method table: %w", err)
+	}
+	result := &UdonAssembly{
+		ASM:             "",
+		ProgramCounter:  0,
+		IDCounter:       0,
+		LabelDict:       map[LabelName]Addr{},
+		EventNames:      []EventName{},
+		ExportVars:      []VarName{},
+		VarTable:        NewVarTable(),
+		DefFuncTable:    NewDefFuncTable(),
+		UdonMethodTable: umt,
+		EnvVars:         []VarName{},
+	}
+	return result, nil
 }
 
 func (ua *UdonAssembly) AddInstComment(comment string) {
 	return
 }
 func (ua *UdonAssembly) AddInst(bcodeSize Addr, inst string) {
-	ua.ASM += fmt.Sprintf("%s\n", inst)
+	ua.ASM += fmt.Sprintf("        %s\n", inst)
 	ua.ProgramCounter = Addr(ua.ProgramCounter + bcodeSize)
 	return
 }
@@ -27,9 +52,9 @@ func (ua *UdonAssembly) MakeCodeSeg() string {
 	ret_code := ".code_start\n\n"
 	for _, eventName := range ua.EventNames {
 		ret_code += fmt.Sprintf("    .export %s\n", eventName)
-		ret_code += fmt.Sprintf("%s\n", ua.ASM)
-		ret_code += fmt.Sprintf(".code_end\n")
 	}
+	ret_code += fmt.Sprintf("%s\n", ua.ASM)
+	ret_code += fmt.Sprintf(".code_end\n")
 	return ret_code
 }
 func (ua *UdonAssembly) GetNextId(name string) string {
@@ -52,83 +77,229 @@ func (ua *UdonAssembly) RemoveTop() {
 }
 func (ua *UdonAssembly) PopVar(ret_value_name VarName) error {
 	ua.AddInstComment(fmt.Sprintf("Pop(Push->Copy) %s", ret_value_name))
-	ret_type := ua.VarTable.GetVarType(ret_value_name)
-	if ret_type == nil {
-		return fmt.Errorf("pop: Variable %s is not defined.", ret_value_name)
+	_, err := ua.VarTable.GetVarType(ret_value_name)
+	if err != nil {
+		return fmt.Errorf("PopVar: %w", err)
 	}
 	ua.PushVar(ret_value_name)
 	ua.Copy()
 	return nil
 }
-func (ua *UdonAssembly) PopVars(var_names []VarName) {
-	return
+func (ua *UdonAssembly) PopVars(varNames []VarName) error {
+	stringVarNames := []string{}
+	for _, varName := range varNames {
+		stringVarNames = append(stringVarNames, string(varName))
+	}
+	ua.AddInstComment(fmt.Sprintf("Pops %s", strings.Join(stringVarNames, ",")))
+	for i := len(varNames) - 1; i > 0; i-- {
+		varName := varNames[i]
+		ua.PopVar(varName)
+	}
+	return nil
 }
 func (ua *UdonAssembly) Push(addr Addr) {
+	ua.AddInst(Addr(8), fmt.Sprintf("PUSH, %x", addr))
 	return
 }
-func (ua *UdonAssembly) PushVar(var_name VarName) {
+func (ua *UdonAssembly) PushVar(varName VarName) {
+	ua.AddInst(Addr(8), fmt.Sprintf("PUSH, %s", varName))
 	return
 }
-func (ua *UdonAssembly) PushVars(var_names []VarName) {
+func (ua *UdonAssembly) PushVars(varNames []VarName) {
+	stringVarNames := []string{}
+	for _, varName := range varNames {
+		stringVarNames = append(stringVarNames, string(varName))
+	}
+	ua.AddInstComment(fmt.Sprintf("pushes %s", strings.Join(stringVarNames, ",")))
+	for _, varName := range varNames {
+		ua.PushVar(varName)
+	}
 	return
 }
 func (ua *UdonAssembly) Copy() {
+	ua.AddInst(Addr(4), "COPY")
 	return
 }
-func (ua *UdonAssembly) PushStr(_str string) {
+func (ua *UdonAssembly) PushStr(val string) {
+	ua.AddInst(Addr(8), fmt.Sprintf(`PUSH, "%s"`, val))
 	return
 }
 func (ua *UdonAssembly) Jump(addr Addr) {
+	ua.AddInst(Addr(8), fmt.Sprintf("JUMP, %#x", addr))
 	return
 }
 func (ua *UdonAssembly) JumpLabel(label LabelName) {
+	ua.AddInst(Addr(8), fmt.Sprintf("JUMP, ###%s###", label))
 	return
 }
 func (ua *UdonAssembly) JumpIfFalse(addr Addr) {
+	ua.AddInst(Addr(8), fmt.Sprintf("JUMP_IF_FALSE, %#x", addr))
 	return
 }
 func (ua *UdonAssembly) JumpIfFalseLabel(label LabelName) {
+	ua.AddInst(Addr(8), fmt.Sprintf("JUMP_IF_FALSE, ###%s###", label))
 	return
 }
-func (ua *UdonAssembly) JumpIndirect(var_name VarName) {
+func (ua *UdonAssembly) JumpIndirect(varName VarName) {
+	ua.AddInst(Addr(8), fmt.Sprintf("JUMP_INDIRECT, %s", varName))
 	return
 }
 func (ua *UdonAssembly) JumpRetAddr() {
+	ua.AddInst(Addr(8), fmt.Sprintf("JUMP_INDIRECT, ret_addr"))
 	return
 }
 func (ua *UdonAssembly) Extern(extern_str ExternStr) {
+	ua.AddInst(Addr(8), fmt.Sprintf(`EXTERN, "%s"`, extern_str))
 	return
 }
 func (ua *UdonAssembly) End() {
+	ua.AddInst(Addr(8), "JUMP, 0xFFFFFFFF")
 	return
 }
-func (ua *UdonAssembly) CallExtern(extern_str ExternStr, arg_vars []VarName) {
+func (ua *UdonAssembly) CallExtern(extern_str ExternStr, argVars []VarName) {
+	stringVarNames := []string{}
+	for _, varName := range argVars {
+		stringVarNames = append(stringVarNames, string(varName))
+	}
+	ua.AddInstComment(fmt.Sprintf("Call Extern %s[%s]", extern_str, strings.Join(stringVarNames, ",")))
+	for _, arg := range argVars {
+		ua.PushVar(arg)
+	}
+	ua.Extern(extern_str)
 	return
 }
-func (ua *UdonAssembly) Assign(dist_var_name VarName, src_var_name VarName) {
+func (ua *UdonAssembly) Assign(distVarName VarName, srcVarName VarName) {
+	// If the variable name on the right side is UdonTypeName,
+	// just set the type of the variable on the left.
+	existingVarType, srcVarNameexists := UdonTypes[srcVarName]
+	if srcVarNameexists {
+		ua.VarTable.AddVar(distVarName, existingVarType, "null")
+		return
+	}
+
+	srcVarType, err := ua.VarTable.GetVarType(srcVarName)
+	// If the left variable is undefined, define the variable.
+	if err != nil {
+		ua.AddInstComment(fmt.Sprintf("Declare %s", distVarName))
+		ua.VarTable.AddVar(distVarName, srcVarType, "null")
+	}
+	ua.AddInstComment(fmt.Sprintf("%s = %s", distVarName, srcVarName))
+	ua.PushVar(srcVarName)
+	ua.PushVar(distVarName)
+	ua.Copy()
 	return
 }
-func (ua *UdonAssembly) SetBool(var_name VarName, bool_num bool) {
+func (ua *UdonAssembly) SetBool(varName VarName, bool_num bool) {
+	ua.PushStr(fmt.Sprintf("%v", bool_num))
+	ua.PushVar(varName)
+	ua.Extern(ExternStr("SystemBoolean.__Parse__SystemString__SystemBoolean"))
 	return
 }
-func (ua *UdonAssembly) SetUint32(var_name VarName, num int) {
+func (ua *UdonAssembly) SetUint32(varName VarName, num int) {
+	ua.AddInstComment(fmt.Sprintf("%s = %d", varName, num))
+	constVarName := VarName(ua.GetNextId("const_uint32"))
+	ua.VarTable.AddVar(constVarName, UdonTypeName("UInt32"), strconv.Itoa(num))
+	ua.PushVar(constVarName)
+	ua.PushVar(varName)
+	ua.Copy()
 	return
 }
 func (ua *UdonAssembly) GetAddr(label LabelName) Addr {
-	return 0
+	return ua.LabelDict[label]
 }
 func (ua *UdonAssembly) AddLabel(label LabelName, addr Addr) {
-	return
+	ua.LabelDict[label] = addr
 }
 func (ua *UdonAssembly) ReplaceTmpAdrr(code string) string {
-	return ""
+	result := []string{}
+	lines := strings.Split(code, "\n")
+	for _, line := range lines {
+		if !strings.Contains(line, "###") {
+			result = append(result, line)
+			continue
+		}
+
+		label := strings.ReplaceAll(line, "#", "")
+		addr := ua.GetAddr(LabelName(label))
+		newline := fmt.Sprintf("###%#x###", addr)
+		result = append(result, newline)
+	}
+	return strings.Join(result, "\n")
 }
-func (ua *UdonAssembly) CallDefFunc(func_name FuncName, arg_var_names []VarName) *VarName {
+func (ua *UdonAssembly) CallDefFunc(func_name FuncName, arg_var_names []VarName) (*VarName, error) {
+	ua.AddInstComment(fmt.Sprintf("Call DefFunc %s%s", func_name, arg_var_names))
+	arg_var_types := []UdonTypeName{}
+	for _, argVarName := range arg_var_names {
+		varType, err := ua.VarTable.GetVarType(argVarName)
+		if err != nil {
+			return nil, fmt.Errorf("CallDefFunc: %w", err)
+		}
+		arg_var_types = append(arg_var_types, varType)
+	}
+	retTypeName, err := ua.DefFuncTable.GetRetType(func_name, arg_var_types)
+	if err != nil {
+		return nil, fmt.Errorf("Get return type: %w", err)
+	}
+	retCallLabel := LabelName(ua.GetNextId("ret_call_label"))
+	constRetAddr := VarName(ua.GetNextId("const_ret_addr"))
+	retValue := VarName(ua.GetNextId("ret_value"))
+
+	// Save current return address
+	ua.PushVar(VarName("ret_addr"))
+	// Save environment variables
+	ua.PushVars(ua.EnvVars)
+	// Save return address in order to return
+	ua.VarTable.AddVar(
+		VarName(constRetAddr),
+		UdonTypeName("UInt32"),
+		fmt.Sprintf("###%s###", retCallLabel),
+	)
+	// ua.Assign(VarName('ret_addr'), VarName(constRetAddr))
+	ua.PushVar(VarName(constRetAddr))
+	//Push arguments
+	ua.PushVars(arg_var_names)
+	//goto func label
+	ua.JumpLabel(LabelName(ua.DefFuncTable.GetFunctionId(func_name, arg_var_types)))
+	ua.AddLabelCurrentAddr(retCallLabel)
+	if retTypeName != UdonTypeName("Void") {
+		// pop ret_var_name
+		ua.VarTable.AddVar(retValue, retTypeName, "null")
+		ua.PopVar(retValue)
+		// restore environment
+		ua.PopVars(ua.EnvVars)
+		// restore current return address
+		ua.PopVar(VarName("ret_addr"))
+		return &retValue, nil
+	}
+	// restore environment
+	ua.PopVars(ua.EnvVars)
+	// restore current return address
+	ua.PopVar(VarName("ret_addr"))
+	return nil, nil
+}
+func (ua *UdonAssembly) AddEvent(event_name EventName, def_arg_var_names []VarName, def_arg_types []UdonTypeName) error {
+	savedEventItem, ok := EventTable[event_name]
+	if !ok {
+		// TODO: Add user event processing
+		// (I still don't understand the specifications of user events)
+		ua.EventNames = append(ua.EventNames, event_name)
+		return nil
+	}
+
+	// Define the variables required for the event with arguments.
+	if len(savedEventItem) != len(def_arg_var_names) {
+		return fmt.Errorf("add_event: The required arguments for event %s and the number of defined arguments are different.", event_name)
+	}
+
+	for i, savedArgTuple := range savedEventItem {
+		if savedArgTuple.UdonTypeName != def_arg_types[i] {
+			return fmt.Errorf("add_event: The type of the argument of registered event %s is different from provided.", event_name)
+		}
+		ua.VarTable.AddVar(savedArgTuple.VarName, savedArgTuple.UdonTypeName, "null")
+	}
+	ua.EventNames = append(ua.EventNames, event_name)
 	return nil
 }
-func (ua *UdonAssembly) AddEvent(event_name EventName, def_arg_var_names []VarName, def_arg_types []UdonTypeName) {
-	return
-}
 func (ua *UdonAssembly) EventHead(event_name EventName) {
-	return
+	ua.ASM += fmt.Sprintf("    %s:\n", event_name)
 }

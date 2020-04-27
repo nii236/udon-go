@@ -1,6 +1,6 @@
 package assembly
 
-var UdonTypes = map[string]string{
+var UdonTypes = map[VarName]UdonTypeName{
 	"AINavMeshAgentRef":                     "UnityEngineAINavMeshAgentRef",
 	"AINavMeshDataRef":                      "UnityEngineAINavMeshDataRef",
 	"AINavMeshHitRef":                       "UnityEngineAINavMeshHitRef",

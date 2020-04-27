@@ -6,11 +6,13 @@ import (
 	"go/ast"
 	"go/token"
 	"io"
+	"strconv"
 	"strings"
 	"udon-go/assembly"
 )
 
-func handleDecls(uasm assembly.UdonAssembly, out io.Writer, d []ast.Decl) error {
+func handleDecls(uasm *assembly.UdonAssembly, out io.Writer, d []ast.Decl) error {
+	fmt.Println("run: handleDecls")
 	for _, decl := range d {
 		switch decl := decl.(type) {
 		case *ast.GenDecl:
@@ -24,7 +26,8 @@ func handleDecls(uasm assembly.UdonAssembly, out io.Writer, d []ast.Decl) error 
 	return ErrNotImplemented
 }
 
-func handleGenDecl(uasm assembly.UdonAssembly, out io.Writer, decl *ast.GenDecl) error {
+func handleGenDecl(uasm *assembly.UdonAssembly, out io.Writer, decl *ast.GenDecl) error {
+	fmt.Println("run: handleGenDecl")
 	for _, s := range decl.Specs {
 		vs, ok := s.(*ast.ValueSpec)
 		if !ok {
@@ -40,23 +43,71 @@ func handleGenDecl(uasm assembly.UdonAssembly, out io.Writer, decl *ast.GenDecl)
 		if len(vs.Values) > 1 {
 			return fmt.Errorf("unsupported # of values: %v", vs.Names)
 		}
-		l, ok := vs.Values[0].(*ast.BasicLit)
-		if !ok {
-			return fmt.Errorf("unsupported value: %#v", vs.Values[0])
+
+		switch l := vs.Values[0].(type) {
+		case *ast.BasicLit:
+			varName := assembly.VarName(vs.Names[0].Name)
+			switch l.Kind {
+			case token.INT:
+				val, err := strconv.Atoi(l.Value)
+				if err != nil {
+					return fmt.Errorf("parse int: %w", err)
+				}
+				uasm.SetUint32(varName, val)
+				uasm.VarTable.AddVar(varName, assembly.UdonTypeInt32, l.Value)
+			case token.FLOAT:
+				return fmt.Errorf("unsupported token: %s", l.Kind.String())
+			case token.IMAG:
+				return fmt.Errorf("unsupported token: %s", l.Kind.String())
+			case token.CHAR:
+				return fmt.Errorf("unsupported token: %s", l.Kind.String())
+			case token.STRING:
+				return fmt.Errorf("unsupported token: %s", l.Kind.String())
+			default:
+				return fmt.Errorf("unsupported token: %s", l.Kind.String())
+			}
+
+			uasm.VarTable.AddVarGlobal(varName)
+		case *ast.FuncLit:
+			funcName := assembly.VarName(vs.Names[0].Name)
+			argTypes := []assembly.UdonTypeName{}
+			for _, field := range l.Type.Params.List {
+				switch f := field.Tag.Kind {
+				case token.INT:
+					argTypes = append(argTypes, f.String())
+				case token.FLOAT:
+					argTypes = append(argTypes, f.String())
+				case token.IMAG:
+					argTypes = append(argTypes, f.String())
+				case token.CHAR:
+					argTypes = append(argTypes, f.String())
+				case token.STRING:
+					argTypes = append(argTypes, f.String())
+				}
+
+			}
+			uasm.DefFuncTable.AddFunc(funcName)
 		}
-		if l.Kind != token.INT {
-			return fmt.Errorf("unsupported literal kind: %#v", l.Kind)
-		}
-		decl = append(decl, "int", vs.Names[0].Name, "=", l.Value)
-		fmt.Fprintf(out, "%s;\n", strings.Join(decl, " "))
+
 	}
+	return nil
+}
+func handleFuncDecl(uasm *assembly.UdonAssembly, out io.Writer, decl *ast.FuncDecl) error {
+	fmt.Println("run: handleFuncDecl")
+	// for _, param := range decl.Type.Params.List {
+
+	// }
+	// for _, result := range decl.Type.Results.List {
+	// 	result.Type
+	// }
+	// uasm.DefFuncTable.AddFunc(
+	// 	assembly.FuncName(decl.Name.Name),
+	// 	nil,
+	// )
 	return ErrNotImplemented
 }
-func handleFuncDecl(uasm assembly.UdonAssembly, out io.Writer, decl *ast.FuncDecl) error {
-	uasm.DefFuncTable.AddFunc(assembly.FuncName(decl.Name.Name), nil)
-	return ErrNotImplemented
-}
-func handleBlockStmt(uasm assembly.UdonAssembly, out io.Writer, bs *ast.BlockStmt) error {
+func handleBlockStmt(uasm *assembly.UdonAssembly, out io.Writer, bs *ast.BlockStmt) error {
+	fmt.Println("run: handleBlockStmt")
 	for _, s := range bs.List {
 		switch st := s.(type) {
 		case *ast.ExprStmt:
@@ -112,16 +163,17 @@ func handleBlockStmt(uasm assembly.UdonAssembly, out io.Writer, bs *ast.BlockStm
 	return ErrNotImplemented
 }
 
-func handleCallExpr(uasm assembly.UdonAssembly, out io.Writer, c *ast.CallExpr) error {
+func handleCallExpr(uasm *assembly.UdonAssembly, out io.Writer, c *ast.CallExpr) error {
+	fmt.Println("run: handleCallExpr")
 	funcName, ok := c.Fun.(*ast.Ident)
 	if !ok {
-		return fmt.Errorf("unsupported func expr:uasm assembly.UdonAssembly,  %#v", c.Fun)
+		return fmt.Errorf("unsupported func expr:uasm *assembly.UdonAssembly,  %#v", c.Fun)
 	}
 	args := []string{}
 	for _, a := range c.Args {
 		var buf bytes.Buffer
 		if err := handleExpr(uasm, &buf, a); err != nil {
-			return fmt.Errorf("error handling func arg uasm assembly.UdonAssembly, expr %#v: %v", a, err)
+			return fmt.Errorf("error handling func arg uasm *assembly.UdonAssembly, expr %#v: %v", a, err)
 		}
 		args = append(args, buf.String())
 	}
@@ -129,7 +181,8 @@ func handleCallExpr(uasm assembly.UdonAssembly, out io.Writer, c *ast.CallExpr) 
 	return ErrNotImplemented
 }
 
-func handleBinaryExpr(uasm assembly.UdonAssembly, out io.Writer, be *ast.BinaryExpr) error {
+func handleBinaryExpr(uasm *assembly.UdonAssembly, out io.Writer, be *ast.BinaryExpr) error {
+	fmt.Println("run: handleBinaryExpr")
 	if err := handleExpr(uasm, out, be.X); err != nil {
 		return fmt.Errorf("error handling left part %v of binary expr: %v", be.X, err)
 	}
@@ -140,7 +193,8 @@ func handleBinaryExpr(uasm assembly.UdonAssembly, out io.Writer, be *ast.BinaryE
 	return ErrNotImplemented
 }
 
-func handleUnaryExpr(uasm assembly.UdonAssembly, out io.Writer, ue *ast.UnaryExpr) error {
+func handleUnaryExpr(uasm *assembly.UdonAssembly, out io.Writer, ue *ast.UnaryExpr) error {
+	fmt.Println("run: handleUnaryExpr")
 	fmt.Fprint(out, ue.Op)
 	if err := handleExpr(uasm, out, ue.X); err != nil {
 		return err
@@ -148,17 +202,20 @@ func handleUnaryExpr(uasm assembly.UdonAssembly, out io.Writer, ue *ast.UnaryExp
 	return ErrNotImplemented
 }
 
-func handleIdent(uasm assembly.UdonAssembly, out io.Writer, ident *ast.Ident) error {
+func handleIdent(uasm *assembly.UdonAssembly, out io.Writer, ident *ast.Ident) error {
+	fmt.Println("run: handleIdent")
 	fmt.Fprintf(out, ident.Name)
 	return ErrNotImplemented
 }
 
-func handleBasicLit(uasm assembly.UdonAssembly, out io.Writer, lit *ast.BasicLit) error {
+func handleBasicLit(uasm *assembly.UdonAssembly, out io.Writer, lit *ast.BasicLit) error {
+	fmt.Println("run: handleBasicLit")
 	fmt.Fprintf(out, lit.Value)
 	return ErrNotImplemented
 }
 
-func handleExpr(uasm assembly.UdonAssembly, out io.Writer, e ast.Expr) error {
+func handleExpr(uasm *assembly.UdonAssembly, out io.Writer, e ast.Expr) error {
+	fmt.Println("run: handleExpr")
 	switch expr := e.(type) {
 	case *ast.CallExpr:
 		return handleCallExpr(uasm, out, expr)

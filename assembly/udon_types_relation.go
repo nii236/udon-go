@@ -1,1002 +1,1000 @@
 package assembly
 
-var UdonTypesRel = map[string]string{
-	"AINavMeshAgentRef":                     "UnityEngineAINavMeshAgentRef",
-	"AINavMeshDataRef":                      "UnityEngineAINavMeshDataRef",
-	"AINavMeshHitRef":                       "UnityEngineAINavMeshHitRef",
-	"AINavMeshObstacleRef":                  "UnityEngineAINavMeshObstacleRef",
-	"AINavMeshPathRef":                      "UnityEngineAINavMeshPathRef",
-	"AIOffMeshLinkRef":                      "UnityEngineAIOffMeshLinkRef",
-	"AccelerationEvent":                     "UnityEngineAccelerationEvent",
-	"AccelerationEventArray":                "UnityEngineAccelerationEventArray",
-	"AdditionalCanvasShaderChannels":        "UnityEngineAdditionalCanvasShaderChannels",
-	"AdjustmentRuleArray":                   "SystemTimeZoneInfoAdjustmentRuleArray",
-	"AimConstraint":                         "UnityEngineAnimationsAimConstraint",
-	"AimConstraintArray":                    "UnityEngineAnimationsAimConstraintArray",
-	"AmbientMode":                           "UnityEngineRenderingAmbientMode",
-	"Animation":                             "UnityEngineAnimation",
-	"AnimationArray":                        "UnityEngineAnimationArray",
-	"AnimationBlendMode":                    "UnityEngineAnimationBlendMode",
-	"AnimationClip":                         "UnityEngineAnimationClip",
-	"AnimationClipArray":                    "UnityEngineAnimationClipArray",
-	"AnimationClipRef":                      "UnityEngineAnimationClipRef",
-	"AnimationCullingType":                  "UnityEngineAnimationCullingType",
-	"AnimationCurve":                        "UnityEngineAnimationCurve",
-	"AnimationEvent":                        "UnityEngineAnimationEvent",
-	"AnimationEventArray":                   "UnityEngineAnimationEventArray",
-	"AnimationPlayMode":                     "UnityEngineAnimationPlayMode",
-	"AnimationRef":                          "UnityEngineAnimationRef",
-	"AnimationState":                        "UnityEngineAnimationState",
-	"AnimationStateArray":                   "UnityEngineAnimationStateArray",
-	"AnimationStateRef":                     "UnityEngineAnimationStateRef",
-	"AnimationTriggers":                     "UnityEngineUIAnimationTriggers",
-	"AnimationTriggersArray":                "UnityEngineUIAnimationTriggersArray",
-	"AnimationsAimConstraintRef":            "UnityEngineAnimationsAimConstraintRef",
-	"AnimationsConstraintSourceRef":         "UnityEngineAnimationsConstraintSourceRef",
-	"AnimationsLookAtConstraintRef":         "UnityEngineAnimationsLookAtConstraintRef",
-	"AnimationsParentConstraintRef":         "UnityEngineAnimationsParentConstraintRef",
-	"AnimationsPositionConstraintRef":       "UnityEngineAnimationsPositionConstraintRef",
-	"AnimationsRotationConstraintRef":       "UnityEngineAnimationsRotationConstraintRef",
-	"AnimationsScaleConstraintRef":          "UnityEngineAnimationsScaleConstraintRef",
-	"Animator":                              "UnityEngineAnimator",
-	"AnimatorArray":                         "UnityEngineAnimatorArray",
-	"AnimatorClipInfo":                      "UnityEngineAnimatorClipInfo",
-	"AnimatorClipInfoArray":                 "UnityEngineAnimatorClipInfoArray",
-	"AnimatorClipInfoRef":                   "UnityEngineAnimatorClipInfoRef",
-	"AnimatorControllerParameter":           "UnityEngineAnimatorControllerParameter",
-	"AnimatorControllerParameterArray":      "UnityEngineAnimatorControllerParameterArray",
-	"AnimatorControllerParameterRef":        "UnityEngineAnimatorControllerParameterRef",
-	"AnimatorControllerParameterType":       "UnityEngineAnimatorControllerParameterType",
-	"AnimatorCullingMode":                   "UnityEngineAnimatorCullingMode",
-	"AnimatorOverrideController":            "UnityEngineAnimatorOverrideController",
-	"AnimatorOverrideControllerArray":       "UnityEngineAnimatorOverrideControllerArray",
-	"AnimatorOverrideControllerRef":         "UnityEngineAnimatorOverrideControllerRef",
-	"AnimatorRecorderMode":                  "UnityEngineAnimatorRecorderMode",
-	"AnimatorRef":                           "UnityEngineAnimatorRef",
-	"AnimatorStateInfo":                     "UnityEngineAnimatorStateInfo",
-	"AnimatorStateInfoArray":                "UnityEngineAnimatorStateInfoArray",
-	"AnimatorStateInfoRef":                  "UnityEngineAnimatorStateInfoRef",
-	"AnimatorTransitionInfo":                "UnityEngineAnimatorTransitionInfo",
-	"AnimatorTransitionInfoArray":           "UnityEngineAnimatorTransitionInfoArray",
-	"AnimatorTransitionInfoRef":             "UnityEngineAnimatorTransitionInfoRef",
-	"AnimatorUpdateMode":                    "UnityEngineAnimatorUpdateMode",
-	"AnimatorUtility":                       "UnityEngineAnimatorUtility",
-	"AnimatorUtilityArray":                  "UnityEngineAnimatorUtilityArray",
-	"AnimatorUtilityRef":                    "UnityEngineAnimatorUtilityRef",
-	"AnisotropicFiltering":                  "UnityEngineAnisotropicFiltering",
-	"AreaEffector2D":                        "UnityEngineAreaEffector2D",
-	"AreaEffector2DArray":                   "UnityEngineAreaEffector2DArray",
-	"AreaEffector2DRef":                     "UnityEngineAreaEffector2DRef",
-	"Array":                                 "SystemArray",
-	"AspectMode":                            "UnityEngineUIAspectRatioFitterAspectMode",
-	"AspectRatioFitter":                     "UnityEngineUIAspectRatioFitter",
-	"AspectRatioFitterArray":                "UnityEngineUIAspectRatioFitterArray",
-	"AudioChorusFilter":                     "UnityEngineAudioChorusFilter",
-	"AudioChorusFilterArray":                "UnityEngineAudioChorusFilterArray",
-	"AudioChorusFilterRef":                  "UnityEngineAudioChorusFilterRef",
-	"AudioClip":                             "UnityEngineAudioClip",
-	"AudioClipArray":                        "UnityEngineAudioClipArray",
-	"AudioClipLoadType":                     "UnityEngineAudioClipLoadType",
-	"AudioClipRef":                          "UnityEngineAudioClipRef",
-	"AudioDataLoadState":                    "UnityEngineAudioDataLoadState",
-	"AudioDistortionFilter":                 "UnityEngineAudioDistortionFilter",
-	"AudioDistortionFilterArray":            "UnityEngineAudioDistortionFilterArray",
-	"AudioDistortionFilterRef":              "UnityEngineAudioDistortionFilterRef",
-	"AudioEchoFilter":                       "UnityEngineAudioEchoFilter",
-	"AudioEchoFilterArray":                  "UnityEngineAudioEchoFilterArray",
-	"AudioEchoFilterRef":                    "UnityEngineAudioEchoFilterRef",
-	"AudioHighPassFilter":                   "UnityEngineAudioHighPassFilter",
-	"AudioHighPassFilterArray":              "UnityEngineAudioHighPassFilterArray",
-	"AudioHighPassFilterRef":                "UnityEngineAudioHighPassFilterRef",
-	"AudioLowPassFilter":                    "UnityEngineAudioLowPassFilter",
-	"AudioLowPassFilterArray":               "UnityEngineAudioLowPassFilterArray",
-	"AudioLowPassFilterRef":                 "UnityEngineAudioLowPassFilterRef",
-	"AudioMixerGroup":                       "UnityEngineAudioAudioMixerGroup",
-	"AudioReverbFilter":                     "UnityEngineAudioReverbFilter",
-	"AudioReverbFilterArray":                "UnityEngineAudioReverbFilterArray",
-	"AudioReverbFilterRef":                  "UnityEngineAudioReverbFilterRef",
-	"AudioReverbPreset":                     "UnityEngineAudioReverbPreset",
-	"AudioReverbZone":                       "UnityEngineAudioReverbZone",
-	"AudioReverbZoneArray":                  "UnityEngineAudioReverbZoneArray",
-	"AudioReverbZoneRef":                    "UnityEngineAudioReverbZoneRef",
-	"AudioRolloffMode":                      "UnityEngineAudioRolloffMode",
-	"AudioSource":                           "UnityEngineAudioSource",
-	"AudioSourceArray":                      "UnityEngineAudioSourceArray",
-	"AudioSourceCurveType":                  "UnityEngineAudioSourceCurveType",
-	"AudioSourceRef":                        "UnityEngineAudioSourceRef",
-	"AudioVelocityUpdateMode":               "UnityEngineAudioVelocityUpdateMode",
-	"Avatar":                                "UnityEngineAvatar",
-	"AvatarArray":                           "UnityEngineAvatarArray",
-	"AvatarBuilder":                         "UnityEngineAvatarBuilder",
-	"AvatarBuilderArray":                    "UnityEngineAvatarBuilderArray",
-	"AvatarBuilderRef":                      "UnityEngineAvatarBuilderRef",
-	"AvatarIKGoal":                          "UnityEngineAvatarIKGoal",
-	"AvatarIKHint":                          "UnityEngineAvatarIKHint",
-	"AvatarMask":                            "UnityEngineAvatarMask",
-	"AvatarMaskArray":                       "UnityEngineAvatarMaskArray",
-	"AvatarMaskBodyPart":                    "UnityEngineAvatarMaskBodyPart",
-	"AvatarMaskRef":                         "UnityEngineAvatarMaskRef",
-	"AvatarRef":                             "UnityEngineAvatarRef",
-	"AvatarTarget":                          "UnityEngineAvatarTarget",
-	"Axis":                                  "UnityEngineUIGridLayoutGroupAxis",
-	"AxisEventData":                         "UnityEngineEventSystemsAxisEventData",
-	"Base64FormattingOptions":               "SystemBase64FormattingOptions",
-	"BaseEventData":                         "UnityEngineEventSystemsBaseEventData",
-	"BaseMeshEffect":                        "UnityEngineUIBaseMeshEffect",
-	"BaseMeshEffectArray":                   "UnityEngineUIBaseMeshEffectArray",
-	"BillboardAsset":                        "UnityEngineBillboardAsset",
-	"BillboardRenderer":                     "UnityEngineBillboardRenderer",
-	"BillboardRendererArray":                "UnityEngineBillboardRendererArray",
-	"BillboardRendererRef":                  "UnityEngineBillboardRendererRef",
-	"BlendWeights":                          "UnityEngineBlendWeights",
-	"BlockingObjects":                       "UnityEngineUIGraphicRaycasterBlockingObjects",
-	"BoneWeightArray":                       "UnityEngineBoneWeightArray",
-	"Boolean":                               "SystemBoolean",
-	"BooleanArray":                          "SystemBooleanArray",
-	"BooleanRef":                            "SystemBooleanRef",
-	"Bounds":                                "UnityEngineBounds",
-	"BoundsArray":                           "UnityEngineBoundsArray",
-	"BoundsRef":                             "UnityEngineBoundsRef",
-	"BoxCollider":                           "UnityEngineBoxCollider",
-	"BoxCollider2D":                         "UnityEngineBoxCollider2D",
-	"BoxCollider2DArray":                    "UnityEngineBoxCollider2DArray",
-	"BoxCollider2DRef":                      "UnityEngineBoxCollider2DRef",
-	"BoxColliderArray":                      "UnityEngineBoxColliderArray",
-	"BoxColliderRef":                        "UnityEngineBoxColliderRef",
-	"Burst":                                 "UnityEngineParticleSystemBurst",
-	"BurstArray":                            "UnityEngineParticleSystemBurstArray",
-	"Button":                                "UnityEngineUIButton",
-	"ButtonArray":                           "UnityEngineUIButtonArray",
-	"ButtonClickedEvent":                    "UnityEngineUIButtonButtonClickedEvent",
-	"ButtonClickedEventArray":               "UnityEngineUIButtonButtonClickedEventArray",
-	"Byte":                                  "SystemByte",
-	"ByteArray":                             "SystemByteArray",
-	"ByteRef":                               "SystemByteRef",
-	"Camera":                                "UnityEngineCamera",
-	"CameraArray":                           "UnityEngineCameraArray",
-	"CameraClearFlags":                      "UnityEngineCameraClearFlags",
-	"CameraEvent":                           "UnityEngineRenderingCameraEvent",
-	"CameraRef":                             "UnityEngineCameraRef",
-	"CameraType":                            "UnityEngineCameraType",
-	"Canvas":                                "UnityEngineCanvas",
-	"CanvasArray":                           "UnityEngineCanvasArray",
-	"CanvasRef":                             "UnityEngineCanvasRef",
-	"CanvasRenderer":                        "UnityEngineCanvasRenderer",
-	"CanvasRendererArray":                   "UnityEngineCanvasRendererArray",
-	"CanvasRendererRef":                     "UnityEngineCanvasRendererRef",
-	"CanvasScaler":                          "UnityEngineUICanvasScaler",
-	"CanvasScalerArray":                     "UnityEngineUICanvasScalerArray",
-	"CanvasUpdate":                          "UnityEngineUICanvasUpdate",
-	"CapsuleCollider":                       "UnityEngineCapsuleCollider",
-	"CapsuleCollider2D":                     "UnityEngineCapsuleCollider2D",
-	"CapsuleCollider2DArray":                "UnityEngineCapsuleCollider2DArray",
-	"CapsuleCollider2DRef":                  "UnityEngineCapsuleCollider2DRef",
-	"CapsuleColliderArray":                  "UnityEngineCapsuleColliderArray",
-	"CapsuleColliderRef":                    "UnityEngineCapsuleColliderRef",
-	"CapsuleDirection2D":                    "UnityEngineCapsuleDirection2D",
-	"Char":                                  "SystemChar",
-	"CharArray":                             "SystemCharArray",
-	"CharEnumerator":                        "SystemCharEnumerator",
-	"CharRef":                               "SystemCharRef",
-	"CharacterValidation":                   "UnityEngineUIInputFieldCharacterValidation",
-	"CircleCollider2D":                      "UnityEngineCircleCollider2D",
-	"CircleCollider2DArray":                 "UnityEngineCircleCollider2DArray",
-	"CircleCollider2DRef":                   "UnityEngineCircleCollider2DRef",
-	"Clipping":                              "UnityEngineUIClipping",
-	"Collider":                              "UnityEngineCollider",
-	"Collider2D":                            "UnityEngineCollider2D",
-	"Collider2DArray":                       "UnityEngineCollider2DArray",
-	"Collider2DRef":                         "UnityEngineCollider2DRef",
-	"ColliderArray":                         "UnityEngineColliderArray",
-	"ColliderDistance2D":                    "UnityEngineColliderDistance2D",
-	"ColliderRef":                           "UnityEngineColliderRef",
-	"Collision":                             "UnityEngineCollision",
-	"Collision2D":                           "UnityEngineCollision2D",
-	"Collision2DArray":                      "UnityEngineCollision2DArray",
-	"Collision2DRef":                        "UnityEngineCollision2DRef",
-	"CollisionArray":                        "UnityEngineCollisionArray",
-	"CollisionDetectionMode":                "UnityEngineCollisionDetectionMode",
-	"CollisionDetectionMode2D":              "UnityEngineCollisionDetectionMode2D",
-	"CollisionModule":                       "UnityEngineParticleSystemCollisionModule",
-	"CollisionModuleArray":                  "UnityEngineParticleSystemCollisionModuleArray",
-	"CollisionRef":                          "UnityEngineCollisionRef",
-	"Color":                                 "UnityEngineColor",
-	"Color32":                               "UnityEngineColor32",
-	"Color32Array":                          "UnityEngineColor32Array",
-	"ColorArray":                            "UnityEngineColorArray",
-	"ColorBlock":                            "UnityEngineUIColorBlock",
-	"ColorBlockArray":                       "UnityEngineUIColorBlockArray",
-	"ColorBySpeedModule":                    "UnityEngineParticleSystemColorBySpeedModule",
-	"ColorBySpeedModuleArray":               "UnityEngineParticleSystemColorBySpeedModuleArray",
-	"ColorOverLifetimeModule":               "UnityEngineParticleSystemColorOverLifetimeModule",
-	"ColorRef":                              "UnityEngineColorRef",
-	"ColorSpace":                            "UnityEngineColorSpace",
-	"CombineInstanceArray":                  "UnityEngineCombineInstanceArray",
-	"CommandBuffer":                         "UnityEngineRenderingCommandBuffer",
-	"CommandBufferArray":                    "UnityEngineRenderingCommandBufferArray",
-	"CompareOptions":                        "SystemGlobalizationCompareOptions",
-	"Compass":                               "UnityEngineCompass",
-	"Component":                             "UnityEngineComponent",
-	"ComponentArray":                        "UnityEngineComponentArray",
-	"ComponentRef":                          "UnityEngineComponentRef",
-	"CompositeCollider2D":                   "UnityEngineCompositeCollider2D",
-	"CompositeCollider2DArray":              "UnityEngineCompositeCollider2DArray",
-	"CompositeCollider2DRef":                "UnityEngineCompositeCollider2DRef",
-	"ComputeBuffer":                         "UnityEngineComputeBuffer",
-	"ComputeQueueType":                      "UnityEngineRenderingComputeQueueType",
-	"ConfigurableJoint":                     "UnityEngineConfigurableJoint",
-	"ConfigurableJointArray":                "UnityEngineConfigurableJointArray",
-	"ConfigurableJointMotion":               "UnityEngineConfigurableJointMotion",
-	"ConfigurableJointRef":                  "UnityEngineConfigurableJointRef",
-	"ConstantForce":                         "UnityEngineConstantForce",
-	"ConstantForce2D":                       "UnityEngineConstantForce2D",
-	"ConstantForce2DArray":                  "UnityEngineConstantForce2DArray",
-	"ConstantForce2DRef":                    "UnityEngineConstantForce2DRef",
-	"ConstantForceArray":                    "UnityEngineConstantForceArray",
-	"ConstantForceRef":                      "UnityEngineConstantForceRef",
-	"Constraint":                            "UnityEngineUIGridLayoutGroupConstraint",
-	"ConstraintSource":                      "UnityEngineAnimationsConstraintSource",
-	"ConstraintSourceArray":                 "UnityEngineAnimationsConstraintSourceArray",
-	"ContactFilter2D":                       "UnityEngineContactFilter2D",
-	"ContactPoint":                          "UnityEngineContactPoint",
-	"ContactPoint2D":                        "UnityEngineContactPoint2D",
-	"ContactPoint2DArray":                   "UnityEngineContactPoint2DArray",
-	"ContactPoint2DRef":                     "UnityEngineContactPoint2DRef",
-	"ContactPointArray":                     "UnityEngineContactPointArray",
-	"ContactPointRef":                       "UnityEngineContactPointRef",
-	"ContentSizeFitter":                     "UnityEngineUIContentSizeFitter",
-	"ContentSizeFitterArray":                "UnityEngineUIContentSizeFitterArray",
-	"ContentType":                           "UnityEngineUIInputFieldContentType",
-	"Convert":                               "SystemConvert",
-	"Corner":                                "UnityEngineUIGridLayoutGroupCorner",
-	"Coroutine":                             "UnityEngineCoroutine",
-	"Cubemap":                               "UnityEngineCubemap",
-	"CullStateChangedEvent":                 "UnityEngineUIMaskableGraphicCullStateChangedEvent",
-	"CultureInfo":                           "SystemGlobalizationCultureInfo",
-	"CustomDataModule":                      "UnityEngineParticleSystemCustomDataModule",
-	"CustomDataModuleArray":                 "UnityEngineParticleSystemCustomDataModuleArray",
-	"DateTime":                              "SystemDateTime",
-	"DateTimeArray":                         "SystemDateTimeArray",
-	"DateTimeKind":                          "SystemDateTimeKind",
-	"DateTimeOffset":                        "SystemDateTimeOffset",
-	"DateTimeRef":                           "SystemDateTimeRef",
-	"DateTimeStyles":                        "SystemGlobalizationDateTimeStyles",
-	"DayOfWeek":                             "SystemDayOfWeek",
-	"Debug":                                 "UnityEngineDebug",
-	"DebugArray":                            "UnityEngineDebugArray",
-	"DebugRef":                              "UnityEngineDebugRef",
-	"Decimal":                               "SystemDecimal",
-	"DefaultControls":                       "UnityEngineUIDefaultControls",
-	"DepthTextureMode":                      "UnityEngineDepthTextureMode",
-	"DeviceOrientation":                     "UnityEngineDeviceOrientation",
-	"Direction":                             "UnityEngineUISliderDirection",
-	"DistanceJoint2D":                       "UnityEngineDistanceJoint2D",
-	"DistanceJoint2DArray":                  "UnityEngineDistanceJoint2DArray",
-	"DistanceJoint2DRef":                    "UnityEngineDistanceJoint2DRef",
-	"Double":                                "SystemDouble",
-	"DoubleArray":                           "SystemDoubleArray",
-	"DoubleRef":                             "SystemDoubleRef",
-	"Dropdown":                              "UnityEngineUIDropdown",
-	"DropdownArray":                         "UnityEngineUIDropdownArray",
-	"DropdownEvent":                         "UnityEngineUIDropdownDropdownEvent",
-	"DropdownEventArray":                    "UnityEngineUIDropdownDropdownEventArray",
-	"DurationUnit":                          "UnityEngineDurationUnit",
-	"Edge":                                  "UnityEngineRectTransformEdge",
-	"EdgeCollider2D":                        "UnityEngineEdgeCollider2D",
-	"EdgeCollider2DArray":                   "UnityEngineEdgeCollider2DArray",
-	"EdgeCollider2DRef":                     "UnityEngineEdgeCollider2DRef",
-	"Effector2D":                            "UnityEngineEffector2D",
-	"Effector2DArray":                       "UnityEngineEffector2DArray",
-	"Effector2DRef":                         "UnityEngineEffector2DRef",
-	"EffectorForceMode2D":                   "UnityEngineEffectorForceMode2D",
-	"EffectorSelection2D":                   "UnityEngineEffectorSelection2D",
-	"EmissionModule":                        "UnityEngineParticleSystemEmissionModule",
-	"EmissionModuleArray":                   "UnityEngineParticleSystemEmissionModuleArray",
-	"EmitParams":                            "UnityEngineParticleSystemEmitParams",
-	"EmitParamsArray":                       "UnityEngineParticleSystemEmitParamsArray",
-	"Event":                                 "UnityEngineEvent",
-	"Exception":                             "SystemException",
-	"ExperimentalAnimationsMuscleHandleRef": "UnityEngineExperimentalAnimationsMuscleHandleRef",
-	"ExternalForcesModule":                  "UnityEngineParticleSystemExternalForcesModule",
-	"ExternalForcesModuleArray":             "UnityEngineParticleSystemExternalForcesModuleArray",
-	"FFTWindow":                             "UnityEngineFFTWindow",
-	"FillMethod":                            "UnityEngineUIImageFillMethod",
-	"FitMode":                               "UnityEngineUIContentSizeFitterFitMode",
-	"FixedJoint":                            "UnityEngineFixedJoint",
-	"FixedJoint2D":                          "UnityEngineFixedJoint2D",
-	"FixedJoint2DArray":                     "UnityEngineFixedJoint2DArray",
-	"FixedJoint2DRef":                       "UnityEngineFixedJoint2DRef",
-	"FixedJointArray":                       "UnityEngineFixedJointArray",
-	"FixedJointRef":                         "UnityEngineFixedJointRef",
-	"Flare":                                 "UnityEngineFlare",
-	"FogMode":                               "UnityEngineFogMode",
-	"Font":                                  "UnityEngineFont",
-	"FontData":                              "UnityEngineUIFontData",
-	"FontDataArray":                         "UnityEngineUIFontDataArray",
-	"FontStyle":                             "UnityEngineFontStyle",
-	"ForceMode":                             "UnityEngineForceMode",
-	"ForceMode2D":                           "UnityEngineForceMode2D",
-	"ForceOverLifetimeModule":               "UnityEngineParticleSystemForceOverLifetimeModule",
-	"ForceOverLifetimeModuleArray":          "UnityEngineParticleSystemForceOverLifetimeModuleArray",
-	"FrictionJoint2D":                       "UnityEngineFrictionJoint2D",
-	"FrictionJoint2DArray":                  "UnityEngineFrictionJoint2DArray",
-	"FrictionJoint2DRef":                    "UnityEngineFrictionJoint2DRef",
-	"FrustumPlanes":                         "UnityEngineFrustumPlanes",
-	"Func":                                  "SystemFuncUnityEngineUIILayoutElementSystemSingle",
-	"GameObject":                            "UnityEngineGameObject",
-	"GameObjectArray":                       "UnityEngineGameObjectArray",
-	"GameObjectRef":                         "UnityEngineGameObjectRef",
-	"GateFitMode":                           "UnityEngineCameraGateFitMode",
-	"GateFitParameters":                     "UnityEngineCameraGateFitParameters",
-	"GenerationType":                        "UnityEngineCompositeCollider2DGenerationType",
-	"GeometryType":                          "UnityEngineCompositeCollider2DGeometryType",
-	"Gradient":                              "UnityEngineGradient",
-	"Graphic":                               "UnityEngineUIGraphic",
-	"GraphicArray":                          "UnityEngineUIGraphicArray",
-	"GraphicRaycaster":                      "UnityEngineUIGraphicRaycaster",
-	"GraphicRaycasterArray":                 "UnityEngineUIGraphicRaycasterArray",
-	"GridLayoutGroup":                       "UnityEngineUIGridLayoutGroup",
-	"GridLayoutGroupArray":                  "UnityEngineUIGridLayoutGroupArray",
-	"Guid":                                  "SystemGuid",
-	"Gyroscope":                             "UnityEngineGyroscope",
-	"HideFlags":                             "UnityEngineHideFlags",
-	"HingeJoint":                            "UnityEngineHingeJoint",
-	"HingeJoint2D":                          "UnityEngineHingeJoint2D",
-	"HingeJoint2DArray":                     "UnityEngineHingeJoint2DArray",
-	"HingeJoint2DRef":                       "UnityEngineHingeJoint2DRef",
-	"HingeJointArray":                       "UnityEngineHingeJointArray",
-	"HingeJointRef":                         "UnityEngineHingeJointRef",
-	"HorizontalLayoutGroup":                 "UnityEngineUIHorizontalLayoutGroup",
-	"HorizontalLayoutGroupArray":            "UnityEngineUIHorizontalLayoutGroupArray",
-	"HorizontalOrVerticalLayoutGroup":       "UnityEngineUIHorizontalOrVerticalLayoutGroup",
-	"HorizontalOrVerticalLayoutGroupArray":  "UnityEngineUIHorizontalOrVerticalLayoutGroupArray",
-	"HorizontalWrapMode":                    "UnityEngineHorizontalWrapMode",
-	"HumanBodyBones":                        "UnityEngineHumanBodyBones",
-	"HumanBone":                             "UnityEngineHumanBone",
-	"HumanBoneArray":                        "UnityEngineHumanBoneArray",
-	"HumanBoneRef":                          "UnityEngineHumanBoneRef",
-	"HumanDescription":                      "UnityEngineHumanDescription",
-	"HumanDescriptionArray":                 "UnityEngineHumanDescriptionArray",
-	"HumanDescriptionRef":                   "UnityEngineHumanDescriptionRef",
-	"HumanLimit":                            "UnityEngineHumanLimit",
-	"HumanLimitArray":                       "UnityEngineHumanLimitArray",
-	"HumanLimitRef":                         "UnityEngineHumanLimitRef",
-	"HumanPartDof":                          "UnityEngineHumanPartDof",
-	"HumanPose":                             "UnityEngineHumanPose",
-	"HumanPoseArray":                        "UnityEngineHumanPoseArray",
-	"HumanPoseHandler":                      "UnityEngineHumanPoseHandler",
-	"HumanPoseHandlerArray":                 "UnityEngineHumanPoseHandlerArray",
-	"HumanPoseHandlerRef":                   "UnityEngineHumanPoseHandlerRef",
-	"HumanPoseRef":                          "UnityEngineHumanPoseRef",
-	"HumanTrait":                            "UnityEngineHumanTrait",
-	"HumanTraitArray":                       "UnityEngineHumanTraitArray",
-	"HumanTraitRef":                         "UnityEngineHumanTraitRef",
-	"IClippable":                            "UnityEngineUIIClippable",
-	"IEnumerable":                           "SystemCollectionsGenericIEnumerableVRCSDKBaseVRC_EventHandlerVrcEvent",
-	"IEnumerator":                           "SystemCollectionsIEnumerator",
-	"IFormatProvider":                       "SystemIFormatProvider",
-	"IList":                                 "SystemCollectionsGenericIListSystemCollectionsGenericKeyValuePairUnityEngineAnimationClipUnityEngineAnimationClip",
-	"ILogger":                               "UnityEngineILogger",
-	"IMECompositionMode":                    "UnityEngineIMECompositionMode",
-	"IUdonEventReceiver":                    "VRCUdonCommonInterfacesIUdonEventReceiver",
-	"Image":                                 "UnityEngineUIImage",
-	"ImageArray":                            "UnityEngineUIImageArray",
-	"IndexFormat":                           "UnityEngineRenderingIndexFormat",
-	"InheritVelocityModule":                 "UnityEngineParticleSystemInheritVelocityModule",
-	"InheritVelocityModuleArray":            "UnityEngineParticleSystemInheritVelocityModuleArray",
-	"Input":                                 "UnityEngineInput",
-	"InputArray":                            "UnityEngineInputArray",
-	"InputField":                            "UnityEngineUIInputField",
-	"InputFieldArray":                       "UnityEngineUIInputFieldArray",
-	"InputManager":                          "VRCSDKBaseInputManager",
-	"InputManagerArray":                     "VRCSDKBaseInputManagerArray",
-	"InputRef":                              "UnityEngineInputRef",
-	"InputType":                             "UnityEngineUIInputFieldInputType",
-	"Int16":                                 "SystemInt16",
-	"Int16Array":                            "SystemInt16Array",
-	"Int16Ref":                              "SystemInt16Ref",
-	"Int32":                                 "SystemInt32",
-	"Int32Array":                            "SystemInt32Array",
-	"Int32ArrayRef":                         "SystemInt32ArrayRef",
-	"Int32Ref":                              "SystemInt32Ref",
-	"Int64":                                 "SystemInt64",
-	"Int64Array":                            "SystemInt64Array",
-	"Int64Ref":                              "SystemInt64Ref",
-	"Joint":                                 "UnityEngineJoint",
-	"Joint2D":                               "UnityEngineJoint2D",
-	"Joint2DArray":                          "UnityEngineJoint2DArray",
-	"Joint2DRef":                            "UnityEngineJoint2DRef",
-	"JointAngleLimits2D":                    "UnityEngineJointAngleLimits2D",
-	"JointArray":                            "UnityEngineJointArray",
-	"JointDrive":                            "UnityEngineJointDrive",
-	"JointLimitState2D":                     "UnityEngineJointLimitState2D",
-	"JointLimits":                           "UnityEngineJointLimits",
-	"JointMotor":                            "UnityEngineJointMotor",
-	"JointMotor2D":                          "UnityEngineJointMotor2D",
-	"JointProjectionMode":                   "UnityEngineJointProjectionMode",
-	"JointRef":                              "UnityEngineJointRef",
-	"JointSpring":                           "UnityEngineJointSpring",
-	"JointSuspension2D":                     "UnityEngineJointSuspension2D",
-	"JointTranslationLimits2D":              "UnityEngineJointTranslationLimits2D",
-	"KeyCode":                               "UnityEngineKeyCode",
-	"LayerMask":                             "UnityEngineLayerMask",
-	"LayerMaskArray":                        "UnityEngineLayerMaskArray",
-	"LayerMaskRef":                          "UnityEngineLayerMaskRef",
-	"LayoutElement":                         "UnityEngineUILayoutElement",
-	"LayoutElementArray":                    "UnityEngineUILayoutElementArray",
-	"LayoutGroup":                           "UnityEngineUILayoutGroup",
-	"LayoutGroupArray":                      "UnityEngineUILayoutGroupArray",
-	"LayoutRebuilder":                       "UnityEngineUILayoutRebuilder",
-	"LayoutRebuilderArray":                  "UnityEngineUILayoutRebuilderArray",
-	"LayoutUtility":                         "UnityEngineUILayoutUtility",
-	"Light":                                 "UnityEngineLight",
-	"LightArray":                            "UnityEngineLightArray",
-	"LightBakingOutput":                     "UnityEngineLightBakingOutput",
-	"LightEvent":                            "UnityEngineRenderingLightEvent",
-	"LightProbeUsage":                       "UnityEngineRenderingLightProbeUsage",
-	"LightRef":                              "UnityEngineLightRef",
-	"LightRenderMode":                       "UnityEngineLightRenderMode",
-	"LightShadowCasterMode":                 "UnityEngineLightShadowCasterMode",
-	"LightShadowResolution":                 "UnityEngineRenderingLightShadowResolution",
-	"LightShadows":                          "UnityEngineLightShadows",
-	"LightType":                             "UnityEngineLightType",
-	"LightsModule":                          "UnityEngineParticleSystemLightsModule",
-	"LightsModuleArray":                     "UnityEngineParticleSystemLightsModuleArray",
-	"LimitVelocityOverLifetimeModule":       "UnityEngineParticleSystemLimitVelocityOverLifetimeModule",
-	"LimitVelocityOverLifetimeModuleArray":  "UnityEngineParticleSystemLimitVelocityOverLifetimeModuleArray",
-	"LineAlignment":                         "UnityEngineLineAlignment",
-	"LineRenderer":                          "UnityEngineLineRenderer",
-	"LineRendererArray":                     "UnityEngineLineRendererArray",
-	"LineRendererRef":                       "UnityEngineLineRendererRef",
-	"LineTextureMode":                       "UnityEngineLineTextureMode",
-	"LineType":                              "UnityEngineUIInputFieldLineType",
-	"List":                                  "SystemCollectionsGenericListVRCSDKBaseVRCPlayerApi",
-	"LocationService":                       "UnityEngineLocationService",
-	"LookAtConstraint":                      "UnityEngineAnimationsLookAtConstraint",
-	"LookAtConstraintArray":                 "UnityEngineAnimationsLookAtConstraintArray",
-	"MainModule":                            "UnityEngineParticleSystemMainModule",
-	"MainModuleArray":                       "UnityEngineParticleSystemMainModuleArray",
-	"Mask":                                  "UnityEngineUIMask",
-	"MaskArray":                             "UnityEngineUIMaskArray",
-	"MaskUtilities":                         "UnityEngineUIMaskUtilities",
-	"MaskUtilitiesArray":                    "UnityEngineUIMaskUtilitiesArray",
-	"MaskableGraphic":                       "UnityEngineUIMaskableGraphic",
-	"MaskableGraphicArray":                  "UnityEngineUIMaskableGraphicArray",
-	"MatchTargetWeightMask":                 "UnityEngineMatchTargetWeightMask",
-	"MatchTargetWeightMaskArray":            "UnityEngineMatchTargetWeightMaskArray",
-	"MatchTargetWeightMaskRef":              "UnityEngineMatchTargetWeightMaskRef",
-	"Material":                              "UnityEngineMaterial",
-	"MaterialArray":                         "UnityEngineMaterialArray",
-	"MaterialGlobalIlluminationFlags":       "UnityEngineMaterialGlobalIlluminationFlags",
-	"MaterialPropertyBlock":                 "UnityEngineMaterialPropertyBlock",
-	"MaterialPropertyBlockArray":            "UnityEngineMaterialPropertyBlockArray",
-	"MaterialPropertyBlockRef":              "UnityEngineMaterialPropertyBlockRef",
-	"MaterialRef":                           "UnityEngineMaterialRef",
-	"Mathf":                                 "UnityEngineMathf",
-	"MathfArray":                            "UnityEngineMathfArray",
-	"MathfRef":                              "UnityEngineMathfRef",
-	"Matrix4x4":                             "UnityEngineMatrix4x4",
-	"Matrix4x4Array":                        "UnityEngineMatrix4x4Array",
-	"Matrix4x4Ref":                          "UnityEngineMatrix4x4Ref",
-	"Mesh":                                  "UnityEngineMesh",
-	"MeshArray":                             "UnityEngineMeshArray",
-	"MeshCollider":                          "UnityEngineMeshCollider",
-	"MeshColliderArray":                     "UnityEngineMeshColliderArray",
-	"MeshColliderCookingOptions":            "UnityEngineMeshColliderCookingOptions",
-	"MeshColliderRef":                       "UnityEngineMeshColliderRef",
-	"MeshFilter":                            "UnityEngineMeshFilter",
-	"MeshFilterArray":                       "UnityEngineMeshFilterArray",
-	"MeshFilterRef":                         "UnityEngineMeshFilterRef",
-	"MeshRef":                               "UnityEngineMeshRef",
-	"MeshRenderer":                          "UnityEngineMeshRenderer",
-	"MeshRendererArray":                     "UnityEngineMeshRendererArray",
-	"MeshRendererRef":                       "UnityEngineMeshRendererRef",
-	"MeshTopology":                          "UnityEngineMeshTopology",
-	"MinMaxCurve":                           "UnityEngineParticleSystemMinMaxCurve",
-	"MinMaxCurveArray":                      "UnityEngineParticleSystemMinMaxCurveArray",
-	"MinMaxGradient":                        "UnityEngineParticleSystemMinMaxGradient",
-	"MinMaxGradientArray":                   "UnityEngineParticleSystemMinMaxGradientArray",
-	"Mode":                                  "UnityEngineUINavigationMode",
-	"MonoOrStereoscopicEye":                 "UnityEngineCameraMonoOrStereoscopicEye",
-	"Motion":                                "UnityEngineMotion",
-	"MotionArray":                           "UnityEngineMotionArray",
-	"MotionRef":                             "UnityEngineMotionRef",
-	"MotionVectorGenerationMode":            "UnityEngineMotionVectorGenerationMode",
-	"MovementType":                          "UnityEngineUIScrollRectMovementType",
-	"MuscleHandle":                          "UnityEngineExperimentalAnimationsMuscleHandle",
-	"MuscleHandleArray":                     "UnityEngineExperimentalAnimationsMuscleHandleArray",
-	"NavMesh":                               "UnityEngineAINavMesh",
-	"NavMeshAgent":                          "UnityEngineAINavMeshAgent",
-	"NavMeshAgentArray":                     "UnityEngineAINavMeshAgentArray",
-	"NavMeshBuildSettings":                  "UnityEngineAINavMeshBuildSettings",
-	"NavMeshData":                           "UnityEngineAINavMeshData",
-	"NavMeshDataArray":                      "UnityEngineAINavMeshDataArray",
-	"NavMeshDataInstance":                   "UnityEngineAINavMeshDataInstance",
-	"NavMeshLinkData":                       "UnityEngineAINavMeshLinkData",
-	"NavMeshLinkInstance":                   "UnityEngineAINavMeshLinkInstance",
-	"NavMeshObstacle":                       "UnityEngineAINavMeshObstacle",
-	"NavMeshObstacleArray":                  "UnityEngineAINavMeshObstacleArray",
-	"NavMeshObstacleShape":                  "UnityEngineAINavMeshObstacleShape",
-	"NavMeshPath":                           "UnityEngineAINavMeshPath",
-	"NavMeshPathArray":                      "UnityEngineAINavMeshPathArray",
-	"NavMeshPathStatus":                     "UnityEngineAINavMeshPathStatus",
-	"NavMeshQueryFilter":                    "UnityEngineAINavMeshQueryFilter",
-	"NavMeshTriangulation":                  "UnityEngineAINavMeshTriangulation",
-	"Navigation":                            "UnityEngineUINavigation",
-	"NavigationArray":                       "UnityEngineUINavigationArray",
-	"NetworkEventTarget":                    "VRCUdonCommonInterfacesNetworkEventTarget",
-	"Networking":                            "VRCSDKBaseNetworking",
-	"NoiseModule":                           "UnityEngineParticleSystemNoiseModule",
-	"NoiseModuleArray":                      "UnityEngineParticleSystemNoiseModuleArray",
-	"NormalizationForm":                     "SystemTextNormalizationForm",
-	"NumberStyles":                          "SystemGlobalizationNumberStyles",
-	"Object":                                "SystemObject",
-	"ObjectArray":                           "SystemObjectArray",
-	"ObjectRef":                             "UnityEngineObjectRef",
-	"ObstacleAvoidanceType":                 "UnityEngineAIObstacleAvoidanceType",
-	"OffMeshLink":                           "UnityEngineAIOffMeshLink",
-	"OffMeshLinkArray":                      "UnityEngineAIOffMeshLinkArray",
-	"OffMeshLinkData":                       "UnityEngineAIOffMeshLinkData",
-	"OnChangeEvent":                         "UnityEngineUIInputFieldOnChangeEvent",
-	"OnChangeEventArray":                    "UnityEngineUIInputFieldOnChangeEventArray",
-	"OnValidateInput":                       "UnityEngineUIInputFieldOnValidateInput",
-	"OpaqueSortMode":                        "UnityEngineRenderingOpaqueSortMode",
-	"OptionData":                            "UnityEngineUIDropdownOptionData",
-	"OptionDataArray":                       "UnityEngineUIDropdownOptionDataArray",
-	"OptionDataList":                        "UnityEngineUIDropdownOptionDataList",
-	"OptionDataListArray":                   "UnityEngineUIDropdownOptionDataListArray",
-	"Outline":                               "UnityEngineUIOutline",
-	"OutlineArray":                          "UnityEngineUIOutlineArray",
-	"PCMReaderCallback":                     "UnityEngineAudioClipPCMReaderCallback",
-	"PCMSetPositionCallback":                "UnityEngineAudioClipPCMSetPositionCallback",
-	"ParentConstraint":                      "UnityEngineAnimationsParentConstraint",
-	"ParentConstraintArray":                 "UnityEngineAnimationsParentConstraintArray",
-	"Particle":                              "UnityEngineParticleSystemParticle",
-	"ParticleArray":                         "UnityEngineParticleSystemParticleArray",
-	"ParticleSystem":                        "UnityEngineParticleSystem",
-	"ParticleSystemAnimationMode":           "UnityEngineParticleSystemAnimationMode",
-	"ParticleSystemAnimationTimeMode":       "UnityEngineParticleSystemAnimationTimeMode",
-	"ParticleSystemAnimationType":           "UnityEngineParticleSystemAnimationType",
-	"ParticleSystemArray":                   "UnityEngineParticleSystemArray",
-	"ParticleSystemBurstRef":                "UnityEngineParticleSystemBurstRef",
-	"ParticleSystemCollisionMode":           "UnityEngineParticleSystemCollisionMode",
-	"ParticleSystemCollisionModuleRef":      "UnityEngineParticleSystemCollisionModuleRef",
-	"ParticleSystemCollisionQuality":        "UnityEngineParticleSystemCollisionQuality",
-	"ParticleSystemCollisionType":           "UnityEngineParticleSystemCollisionType",
-	"ParticleSystemColorBySpeedModuleRef":   "UnityEngineParticleSystemColorBySpeedModuleRef",
-	"ParticleSystemCullingMode":             "UnityEngineParticleSystemCullingMode",
-	"ParticleSystemCurveMode":               "UnityEngineParticleSystemCurveMode",
-	"ParticleSystemCustomData":              "UnityEngineParticleSystemCustomData",
-	"ParticleSystemCustomDataMode":          "UnityEngineParticleSystemCustomDataMode",
-	"ParticleSystemCustomDataModuleRef":     "UnityEngineParticleSystemCustomDataModuleRef",
-	"ParticleSystemEmissionModuleRef":       "UnityEngineParticleSystemEmissionModuleRef",
-	"ParticleSystemEmitParamsRef":           "UnityEngineParticleSystemEmitParamsRef",
-	"ParticleSystemEmitterVelocityMode":     "UnityEngineParticleSystemEmitterVelocityMode",
-	"ParticleSystemExternalForcesModuleRef": "UnityEngineParticleSystemExternalForcesModuleRef",
-	"ParticleSystemForceField":              "UnityEngineParticleSystemForceField",
-	"ParticleSystemForceOverLifetimeModuleRef":         "UnityEngineParticleSystemForceOverLifetimeModuleRef",
-	"ParticleSystemGameObjectFilter":                   "UnityEngineParticleSystemGameObjectFilter",
-	"ParticleSystemGradientMode":                       "UnityEngineParticleSystemGradientMode",
-	"ParticleSystemInheritVelocityMode":                "UnityEngineParticleSystemInheritVelocityMode",
-	"ParticleSystemInheritVelocityModuleRef":           "UnityEngineParticleSystemInheritVelocityModuleRef",
-	"ParticleSystemLightsModuleRef":                    "UnityEngineParticleSystemLightsModuleRef",
-	"ParticleSystemLimitVelocityOverLifetimeModuleRef": "UnityEngineParticleSystemLimitVelocityOverLifetimeModuleRef",
-	"ParticleSystemMainModuleRef":                      "UnityEngineParticleSystemMainModuleRef",
-	"ParticleSystemMeshShapeType":                      "UnityEngineParticleSystemMeshShapeType",
-	"ParticleSystemMinMaxCurveRef":                     "UnityEngineParticleSystemMinMaxCurveRef",
-	"ParticleSystemMinMaxGradientRef":                  "UnityEngineParticleSystemMinMaxGradientRef",
-	"ParticleSystemNoiseModuleRef":                     "UnityEngineParticleSystemNoiseModuleRef",
-	"ParticleSystemNoiseQuality":                       "UnityEngineParticleSystemNoiseQuality",
-	"ParticleSystemOverlapAction":                      "UnityEngineParticleSystemOverlapAction",
-	"ParticleSystemParticleRef":                        "UnityEngineParticleSystemParticleRef",
-	"ParticleSystemRef":                                "UnityEngineParticleSystemRef",
-	"ParticleSystemRingBufferMode":                     "UnityEngineParticleSystemRingBufferMode",
-	"ParticleSystemRotationBySpeedModuleRef":           "UnityEngineParticleSystemRotationBySpeedModuleRef",
-	"ParticleSystemRotationOverLifetimeModuleRef":      "UnityEngineParticleSystemRotationOverLifetimeModuleRef",
-	"ParticleSystemScalingMode":                        "UnityEngineParticleSystemScalingMode",
-	"ParticleSystemShapeModuleRef":                     "UnityEngineParticleSystemShapeModuleRef",
-	"ParticleSystemShapeMultiModeValue":                "UnityEngineParticleSystemShapeMultiModeValue",
-	"ParticleSystemShapeTextureChannel":                "UnityEngineParticleSystemShapeTextureChannel",
-	"ParticleSystemShapeType":                          "UnityEngineParticleSystemShapeType",
-	"ParticleSystemSimulationSpace":                    "UnityEngineParticleSystemSimulationSpace",
-	"ParticleSystemSizeBySpeedModuleRef":               "UnityEngineParticleSystemSizeBySpeedModuleRef",
-	"ParticleSystemSizeOverLifetimeModuleRef":          "UnityEngineParticleSystemSizeOverLifetimeModuleRef",
-	"ParticleSystemStopAction":                         "UnityEngineParticleSystemStopAction",
-	"ParticleSystemStopBehavior":                       "UnityEngineParticleSystemStopBehavior",
-	"ParticleSystemSubEmitterProperties":               "UnityEngineParticleSystemSubEmitterProperties",
-	"ParticleSystemSubEmitterType":                     "UnityEngineParticleSystemSubEmitterType",
-	"ParticleSystemSubEmittersModuleRef":               "UnityEngineParticleSystemSubEmittersModuleRef",
-	"ParticleSystemTextureSheetAnimationModuleRef":     "UnityEngineParticleSystemTextureSheetAnimationModuleRef",
-	"ParticleSystemTrailMode":                          "UnityEngineParticleSystemTrailMode",
-	"ParticleSystemTrailModuleRef":                     "UnityEngineParticleSystemTrailModuleRef",
-	"ParticleSystemTrailTextureMode":                   "UnityEngineParticleSystemTrailTextureMode",
-	"ParticleSystemTriggerModuleRef":                   "UnityEngineParticleSystemTriggerModuleRef",
-	"ParticleSystemVelocityOverLifetimeModuleRef":      "UnityEngineParticleSystemVelocityOverLifetimeModuleRef",
-	"PhysicMaterial":                                   "UnityEnginePhysicMaterial",
-	"PhysicMaterialArray":                              "UnityEnginePhysicMaterialArray",
-	"PhysicMaterialCombine":                            "UnityEnginePhysicMaterialCombine",
-	"PhysicMaterialRef":                                "UnityEnginePhysicMaterialRef",
-	"Physics":                                          "UnityEnginePhysics",
-	"Physics2D":                                        "UnityEnginePhysics2D",
-	"Physics2DArray":                                   "UnityEnginePhysics2DArray",
-	"Physics2DRef":                                     "UnityEnginePhysics2DRef",
-	"PhysicsArray":                                     "UnityEnginePhysicsArray",
-	"PhysicsJobOptions2D":                              "UnityEnginePhysicsJobOptions2D",
-	"PhysicsMaterial2D":                                "UnityEnginePhysicsMaterial2D",
-	"PhysicsMaterial2DArray":                           "UnityEnginePhysicsMaterial2DArray",
-	"PhysicsMaterial2DRef":                             "UnityEnginePhysicsMaterial2DRef",
-	"PhysicsRef":                                       "UnityEnginePhysicsRef",
-	"PhysicsScene":                                     "UnityEnginePhysicsScene",
-	"PhysicsScene2D":                                   "UnityEnginePhysicsScene2D",
-	"PickupHand":                                       "VRCSDKBaseVRC_PickupPickupHand",
-	"Plane":                                            "UnityEnginePlane",
-	"PlatformEffector2D":                               "UnityEnginePlatformEffector2D",
-	"PlatformEffector2DArray":                          "UnityEnginePlatformEffector2DArray",
-	"PlatformEffector2DRef":                            "UnityEnginePlatformEffector2DRef",
-	"PlayMode":                                         "UnityEnginePlayMode",
-	"PlayableGraph":                                    "UnityEnginePlayablesPlayableGraph",
-	"PointEffector2D":                                  "UnityEnginePointEffector2D",
-	"PointEffector2DArray":                             "UnityEnginePointEffector2DArray",
-	"PointEffector2DRef":                               "UnityEnginePointEffector2DRef",
-	"PointerEventData":                                 "UnityEngineEventSystemsPointerEventData",
-	"PolygonCollider2D":                                "UnityEnginePolygonCollider2D",
-	"PolygonCollider2DArray":                           "UnityEnginePolygonCollider2DArray",
-	"PolygonCollider2DRef":                             "UnityEnginePolygonCollider2DRef",
-	"PositionAsUV1":                                    "UnityEngineUIPositionAsUV1",
-	"PositionAsUV1Array":                               "UnityEngineUIPositionAsUV1Array",
-	"PositionConstraint":                               "UnityEngineAnimationsPositionConstraint",
-	"PositionConstraintArray":                          "UnityEngineAnimationsPositionConstraintArray",
-	"PrimitiveType":                                    "UnityEnginePrimitiveType",
-	"QualitySettings":                                  "UnityEngineQualitySettings",
-	"QualitySettingsArray":                             "UnityEngineQualitySettingsArray",
-	"QualitySettingsRef":                               "UnityEngineQualitySettingsRef",
-	"Quaternion":                                       "UnityEngineQuaternion",
-	"QuaternionArray":                                  "UnityEngineQuaternionArray",
-	"QuaternionRef":                                    "UnityEngineQuaternionRef",
-	"QueryTriggerInteraction":                          "UnityEngineQueryTriggerInteraction",
-	"QueueMode":                                        "UnityEngineQueueMode",
-	"Random":                                           "UnityEngineRandom",
-	"RandomArray":                                      "UnityEngineRandomArray",
-	"RandomRef":                                        "UnityEngineRandomRef",
-	"RawImage":                                         "UnityEngineUIRawImage",
-	"RawImageArray":                                    "UnityEngineUIRawImageArray",
-	"Ray":                                              "UnityEngineRay",
-	"RayArray":                                         "UnityEngineRayArray",
-	"RayRef":                                           "UnityEngineRayRef",
-	"RaycastHit":                                       "UnityEngineRaycastHit",
-	"RaycastHit2D":                                     "UnityEngineRaycastHit2D",
-	"RaycastHit2DArray":                                "UnityEngineRaycastHit2DArray",
-	"RaycastHit2DRef":                                  "UnityEngineRaycastHit2DRef",
-	"RaycastHitArray":                                  "UnityEngineRaycastHitArray",
-	"RaycastHitRef":                                    "UnityEngineRaycastHitRef",
-	"ReadOnlyCollection":                               "SystemCollectionsObjectModelReadOnlyCollectionSystemTimeZoneInfo",
-	"ReapplyDrivenProperties":                          "UnityEngineRectTransformReapplyDrivenProperties",
-	"Rect":                                             "UnityEngineRect",
-	"RectMask2D":                                       "UnityEngineUIRectMask2D",
-	"RectMask2DArray":                                  "UnityEngineUIRectMask2DArray",
-	"RectOffset":                                       "UnityEngineRectOffset",
-	"RectTransform":                                    "UnityEngineRectTransform",
-	"RectTransformArray":                               "UnityEngineRectTransformArray",
-	"RectTransformRef":                                 "UnityEngineRectTransformRef",
-	"RelativeJoint2D":                                  "UnityEngineRelativeJoint2D",
-	"RelativeJoint2DArray":                             "UnityEngineRelativeJoint2DArray",
-	"RelativeJoint2DRef":                               "UnityEngineRelativeJoint2DRef",
-	"RenderBuffer":                                     "UnityEngineRenderBuffer",
-	"RenderBufferArray":                                "UnityEngineRenderBufferArray",
-	"RenderMode":                                       "UnityEngineRenderMode",
-	"RenderSettings":                                   "UnityEngineRenderSettings",
-	"RenderSettingsArray":                              "UnityEngineRenderSettingsArray",
-	"RenderSettingsRef":                                "UnityEngineRenderSettingsRef",
-	"RenderTexture":                                    "UnityEngineRenderTexture",
-	"Renderer":                                         "UnityEngineRenderer",
-	"RendererArray":                                    "UnityEngineRendererArray",
-	"RendererExtensions":                               "UnityEngineRendererExtensions",
-	"RendererRef":                                      "UnityEngineRendererRef",
-	"RenderingPath":                                    "UnityEngineRenderingPath",
-	"Resources":                                        "UnityEngineUIDefaultControlsResources",
-	"ResourcesArray":                                   "UnityEngineUIDefaultControlsResourcesArray",
-	"Rigidbody":                                        "UnityEngineRigidbody",
-	"Rigidbody2D":                                      "UnityEngineRigidbody2D",
-	"Rigidbody2DArray":                                 "UnityEngineRigidbody2DArray",
-	"Rigidbody2DRef":                                   "UnityEngineRigidbody2DRef",
-	"RigidbodyArray":                                   "UnityEngineRigidbodyArray",
-	"RigidbodyConstraints":                             "UnityEngineRigidbodyConstraints",
-	"RigidbodyConstraints2D":                           "UnityEngineRigidbodyConstraints2D",
-	"RigidbodyInterpolation":                           "UnityEngineRigidbodyInterpolation",
-	"RigidbodyInterpolation2D":                         "UnityEngineRigidbodyInterpolation2D",
-	"RigidbodyRef":                                     "UnityEngineRigidbodyRef",
-	"RigidbodySleepMode2D":                             "UnityEngineRigidbodySleepMode2D",
-	"RigidbodyType2D":                                  "UnityEngineRigidbodyType2D",
-	"RotationBySpeedModule":                            "UnityEngineParticleSystemRotationBySpeedModule",
-	"RotationBySpeedModuleArray":                       "UnityEngineParticleSystemRotationBySpeedModuleArray",
-	"RotationConstraint":                               "UnityEngineAnimationsRotationConstraint",
-	"RotationConstraintArray":                          "UnityEngineAnimationsRotationConstraintArray",
-	"RotationDriveMode":                                "UnityEngineRotationDriveMode",
-	"RotationOverLifetimeModule":                       "UnityEngineParticleSystemRotationOverLifetimeModule",
-	"RotationOverLifetimeModuleArray":                  "UnityEngineParticleSystemRotationOverLifetimeModuleArray",
-	"RuntimeAnimatorController":                        "UnityEngineRuntimeAnimatorController",
-	"RuntimeAnimatorControllerArray":                   "UnityEngineRuntimeAnimatorControllerArray",
-	"RuntimeAnimatorControllerRef":                     "UnityEngineRuntimeAnimatorControllerRef",
-	"RuntimeTypeHandle":                                "SystemRuntimeTypeHandle",
-	"SByte":                                            "SystemSByte",
-	"SByteArray":                                       "SystemSByteArray",
-	"SByteRef":                                         "SystemSByteRef",
-	"ScaleConstraint":                                  "UnityEngineAnimationsScaleConstraint",
-	"ScaleConstraintArray":                             "UnityEngineAnimationsScaleConstraintArray",
-	"ScaleMode":                                        "UnityEngineUICanvasScalerScaleMode",
-	"Scene":                                            "UnityEngineSceneManagementScene",
-	"ScreenMatchMode":                                  "UnityEngineUICanvasScalerScreenMatchMode",
-	"ScriptableObject":                                 "UnityEngineScriptableObject",
-	"ScrollEvent":                                      "UnityEngineUIScrollbarScrollEvent",
-	"ScrollEventArray":                                 "UnityEngineUIScrollbarScrollEventArray",
-	"ScrollRect":                                       "UnityEngineUIScrollRect",
-	"ScrollRectArray":                                  "UnityEngineUIScrollRectArray",
-	"ScrollRectEvent":                                  "UnityEngineUIScrollRectScrollRectEvent",
-	"ScrollRectEventArray":                             "UnityEngineUIScrollRectScrollRectEventArray",
-	"Scrollbar":                                        "UnityEngineUIScrollbar",
-	"ScrollbarArray":                                   "UnityEngineUIScrollbarArray",
-	"ScrollbarVisibility":                              "UnityEngineUIScrollRectScrollbarVisibility",
-	"Selectable":                                       "UnityEngineUISelectable",
-	"SelectableArray":                                  "UnityEngineUISelectableArray",
-	"SendMessageOptions":                               "UnityEngineSendMessageOptions",
-	"Shader":                                           "UnityEngineShader",
-	"Shadow":                                           "UnityEngineUIShadow",
-	"ShadowArray":                                      "UnityEngineUIShadowArray",
-	"ShadowCastingMode":                                "UnityEngineRenderingShadowCastingMode",
-	"ShadowMapPass":                                    "UnityEngineRenderingShadowMapPass",
-	"ShadowProjection":                                 "UnityEngineShadowProjection",
-	"ShadowQuality":                                    "UnityEngineShadowQuality",
-	"ShadowResolution":                                 "UnityEngineShadowResolution",
-	"ShadowmaskMode":                                   "UnityEngineShadowmaskMode",
-	"ShapeModule":                                      "UnityEngineParticleSystemShapeModule",
-	"ShapeModuleArray":                                 "UnityEngineParticleSystemShapeModuleArray",
-	"Single":                                           "SystemSingle",
-	"SingleArray":                                      "SystemSingle[]",
-	"SingleRef":                                        "SystemSingleRef",
-	"SizeBySpeedModule":                                "UnityEngineParticleSystemSizeBySpeedModule",
-	"SizeBySpeedModuleArray":                           "UnityEngineParticleSystemSizeBySpeedModuleArray",
-	"SizeOverLifetimeModule":                           "UnityEngineParticleSystemSizeOverLifetimeModule",
-	"SizeOverLifetimeModuleArray":                      "UnityEngineParticleSystemSizeOverLifetimeModuleArray",
-	"SkeletonBone":                                     "UnityEngineSkeletonBone",
-	"SkeletonBoneArray":                                "UnityEngineSkeletonBoneArray",
-	"SkeletonBoneRef":                                  "UnityEngineSkeletonBoneRef",
-	"SkinQuality":                                      "UnityEngineSkinQuality",
-	"SkinnedMeshRenderer":                              "UnityEngineSkinnedMeshRenderer",
-	"SkinnedMeshRendererArray":                         "UnityEngineSkinnedMeshRendererArray",
-	"SkinnedMeshRendererRef":                           "UnityEngineSkinnedMeshRendererRef",
-	"Slider":                                           "UnityEngineUISlider",
-	"SliderArray":                                      "UnityEngineUISliderArray",
-	"SliderEvent":                                      "UnityEngineUISliderSliderEvent",
-	"SliderEventArray":                                 "UnityEngineUISliderSliderEventArray",
-	"SliderJoint2D":                                    "UnityEngineSliderJoint2D",
-	"SliderJoint2DArray":                               "UnityEngineSliderJoint2DArray",
-	"SliderJoint2DRef":                                 "UnityEngineSliderJoint2DRef",
-	"SoftJointLimit":                                   "UnityEngineSoftJointLimit",
-	"SoftJointLimitSpring":                             "UnityEngineSoftJointLimitSpring",
-	"Space":                                            "UnityEngineSpace",
-	"SpawnOrientation":                                 "VRCSDKBaseVRC_SceneDescriptorSpawnOrientation",
-	"SphereCollider":                                   "UnityEngineSphereCollider",
-	"SphereColliderArray":                              "UnityEngineSphereColliderArray",
-	"SphereColliderRef":                                "UnityEngineSphereColliderRef",
-	"SphericalHarmonicsL2":                             "UnityEngineRenderingSphericalHarmonicsL2",
-	"SphericalHarmonicsL2Array":                        "UnityEngineRenderingSphericalHarmonicsL2Array",
-	"SpringJoint":                                      "UnityEngineSpringJoint",
-	"SpringJointArray":                                 "UnityEngineSpringJointArray",
-	"SpringJointRef":                                   "UnityEngineSpringJointRef",
-	"Sprite":                                           "UnityEngineSprite",
-	"SpriteDrawMode":                                   "UnityEngineSpriteDrawMode",
-	"SpriteMaskInteraction":                            "UnityEngineSpriteMaskInteraction",
-	"SpriteRenderer":                                   "UnityEngineSpriteRenderer",
-	"SpriteRendererArray":                              "UnityEngineSpriteRendererArray",
-	"SpriteRendererRef":                                "UnityEngineSpriteRendererRef",
-	"SpriteSortPoint":                                  "UnityEngineSpriteSortPoint",
-	"SpriteState":                                      "UnityEngineUISpriteState",
-	"SpriteStateArray":                                 "UnityEngineUISpriteStateArray",
-	"SpriteTileMode":                                   "UnityEngineSpriteTileMode",
-	"State":                                            "UnityEngineRandomState",
-	"StateMachineBehaviourArray":                       "UnityEngineStateMachineBehaviourArray",
-	"StereoTargetEyeMask":                              "UnityEngineStereoTargetEyeMask",
-	"StereoscopicEye":                                  "UnityEngineCameraStereoscopicEye",
-	"String":                                           "SystemString",
-	"StringArray":                                      "SystemStringArray",
-	"StringComparison":                                 "SystemStringComparison",
-	"StringRef":                                        "SystemStringRef",
-	"StringSplitOptions":                               "SystemStringSplitOptions",
-	"StructLayoutAttribute":                            "SystemRuntimeInteropServicesStructLayoutAttribute",
-	"SubEmittersModule":                                "UnityEngineParticleSystemSubEmittersModule",
-	"SubEmittersModuleArray":                           "UnityEngineParticleSystemSubEmittersModuleArray",
-	"SubmitEvent":                                      "UnityEngineUIInputFieldSubmitEvent",
-	"SubmitEventArray":                                 "UnityEngineUIInputFieldSubmitEventArray",
-	"SurfaceEffector2D":                                "UnityEngineSurfaceEffector2D",
-	"SurfaceEffector2DArray":                           "UnityEngineSurfaceEffector2DArray",
-	"SurfaceEffector2DRef":                             "UnityEngineSurfaceEffector2DRef",
-	"SystemSingleArray":                                "SystemSingleArray",
-	"TargetJoint2D":                                    "UnityEngineTargetJoint2D",
-	"TargetJoint2DArray":                               "UnityEngineTargetJoint2DArray",
-	"TargetJoint2DRef":                                 "UnityEngineTargetJoint2DRef",
-	"Text":                                             "UnityEngineUIText",
-	"TextAnchor":                                       "UnityEngineTextAnchor",
-	"TextArray":                                        "UnityEngineUITextArray",
-	"TextAsset":                                        "UnityEngineTextAsset",
-	"TextAssetArray":                                   "UnityEngineTextAssetArray",
-	"TextAssetRef":                                     "UnityEngineTextAssetRef",
-	"TextGenerationSettings":                           "UnityEngineTextGenerationSettings",
-	"TextGenerator":                                    "UnityEngineTextGenerator",
-	"Texture":                                          "UnityEngineTexture",
-	"Texture2D":                                        "UnityEngineTexture2D",
-	"TextureSheetAnimationModule":                      "UnityEngineParticleSystemTextureSheetAnimationModule",
-	"TextureSheetAnimationModuleArray":                 "UnityEngineParticleSystemTextureSheetAnimationModuleArray",
-	"Time":                                             "UnityEngineTime",
-	"TimeArray":                                        "UnityEngineTimeArray",
-	"TimeRef":                                          "UnityEngineTimeRef",
-	"TimeSpan":                                         "SystemTimeSpan",
-	"TimeSpanArray":                                    "SystemTimeSpanArray",
-	"TimeZoneInfo":                                     "SystemTimeZoneInfo",
-	"TimeZoneInfoArray":                                "SystemTimeZoneInfoArray",
-	"TimeZoneInfoRef":                                  "SystemTimeZoneInfoRef",
-	"Toggle":                                           "UnityEngineUIToggle",
-	"ToggleArray":                                      "UnityEngineUIToggleArray",
-	"ToggleEvent":                                      "UnityEngineUIToggleToggleEvent",
-	"ToggleEventArray":                                 "UnityEngineUIToggleToggleEventArray",
-	"ToggleGroup":                                      "UnityEngineUIToggleGroup",
-	"ToggleGroupArray":                                 "UnityEngineUIToggleGroupArray",
-	"Touch":                                            "UnityEngineTouch",
-	"TouchArray":                                       "UnityEngineTouchArray",
-	"TouchScreenKeyboard":                              "UnityEngineTouchScreenKeyboard",
-	"TouchScreenKeyboardType":                          "UnityEngineTouchScreenKeyboardType",
-	"TrackingData":                                     "VRCSDKBaseVRCPlayerApiTrackingData",
-	"TrackingDataArray":                                "VRCSDKBaseVRCPlayerApiTrackingDataArray",
-	"TrackingDataType":                                 "VRCSDKBaseVRCPlayerApiTrackingDataType",
-	"TrailModule":                                      "UnityEngineParticleSystemTrailModule",
-	"TrailModuleArray":                                 "UnityEngineParticleSystemTrailModuleArray",
-	"TrailRenderer":                                    "UnityEngineTrailRenderer",
-	"TrailRendererArray":                               "UnityEngineTrailRendererArray",
-	"TrailRendererRef":                                 "UnityEngineTrailRendererRef",
-	"Transform":                                        "UnityEngineTransform",
-	"TransformArray":                                   "UnityEngineTransformArray",
-	"TransformRef":                                     "UnityEngineTransformRef",
-	"Transition":                                       "UnityEngineUISelectableTransition",
-	"TransparencySortMode":                             "UnityEngineTransparencySortMode",
-	"TriggerModule":                                    "UnityEngineParticleSystemTriggerModule",
-	"TriggerModuleArray":                               "UnityEngineParticleSystemTriggerModuleArray",
-	"Type":                                             "UnityEngineUIImageType",
-	"TypeArray":                                        "SystemTypeArray",
-	"TypeCode":                                         "SystemTypeCode",
-	"TypeRef":                                          "SystemTypeRef",
-	"UIAnimationTriggersRef":                           "UnityEngineUIAnimationTriggersRef",
-	"UIAspectRatioFitterRef":                           "UnityEngineUIAspectRatioFitterRef",
-	"UIBaseMeshEffectRef":                              "UnityEngineUIBaseMeshEffectRef",
-	"UIButtonButtonClickedEventRef":                    "UnityEngineUIButtonButtonClickedEventRef",
-	"UIButtonRef":                                      "UnityEngineUIButtonRef",
-	"UICanvasScalerRef":                                "UnityEngineUICanvasScalerRef",
-	"UIColorBlockRef":                                  "UnityEngineUIColorBlockRef",
-	"UIContentSizeFitterRef":                           "UnityEngineUIContentSizeFitterRef",
-	"UIDefaultControlsResourcesRef":                    "UnityEngineUIDefaultControlsResourcesRef",
-	"UIDropdownDropdownEventRef":                       "UnityEngineUIDropdownDropdownEventRef",
-	"UIDropdownOptionDataListRef":                      "UnityEngineUIDropdownOptionDataListRef",
-	"UIDropdownOptionDataRef":                          "UnityEngineUIDropdownOptionDataRef",
-	"UIDropdownRef":                                    "UnityEngineUIDropdownRef",
-	"UIFontDataRef":                                    "UnityEngineUIFontDataRef",
-	"UIGraphicRaycasterRef":                            "UnityEngineUIGraphicRaycasterRef",
-	"UIGraphicRef":                                     "UnityEngineUIGraphicRef",
-	"UIGridLayoutGroupRef":                             "UnityEngineUIGridLayoutGroupRef",
-	"UIHorizontalLayoutGroupRef":                       "UnityEngineUIHorizontalLayoutGroupRef",
-	"UIHorizontalOrVerticalLayoutGroupRef":             "UnityEngineUIHorizontalOrVerticalLayoutGroupRef",
-	"UIILayoutElementRef":                              "UnityEngineUIILayoutElementRef",
-	"UIImageRef":                                       "UnityEngineUIImageRef",
-	"UIInputFieldOnChangeEventRef":                     "UnityEngineUIInputFieldOnChangeEventRef",
-	"UIInputFieldRef":                                  "UnityEngineUIInputFieldRef",
-	"UIInputFieldSubmitEventRef":                       "UnityEngineUIInputFieldSubmitEventRef",
-	"UILayoutElementRef":                               "UnityEngineUILayoutElementRef",
-	"UILayoutGroupRef":                                 "UnityEngineUILayoutGroupRef",
-	"UILayoutRebuilderRef":                             "UnityEngineUILayoutRebuilderRef",
-	"UIMaskRef":                                        "UnityEngineUIMaskRef",
-	"UIMaskUtilitiesRef":                               "UnityEngineUIMaskUtilitiesRef",
-	"UIMaskableGraphicRef":                             "UnityEngineUIMaskableGraphicRef",
-	"UINavigationRef":                                  "UnityEngineUINavigationRef",
-	"UIOutlineRef":                                     "UnityEngineUIOutlineRef",
-	"UIPositionAsUV1Ref":                               "UnityEngineUIPositionAsUV1Ref",
-	"UIRawImageRef":                                    "UnityEngineUIRawImageRef",
-	"UIRectMask2DRef":                                  "UnityEngineUIRectMask2DRef",
-	"UIScrollRectRef":                                  "UnityEngineUIScrollRectRef",
-	"UIScrollRectScrollRectEventRef":                   "UnityEngineUIScrollRectScrollRectEventRef",
-	"UIScrollbarRef":                                   "UnityEngineUIScrollbarRef",
-	"UIScrollbarScrollEventRef":                        "UnityEngineUIScrollbarScrollEventRef",
-	"UISelectableRef":                                  "UnityEngineUISelectableRef",
-	"UIShadowRef":                                      "UnityEngineUIShadowRef",
-	"UISliderRef":                                      "UnityEngineUISliderRef",
-	"UISliderSliderEventRef":                           "UnityEngineUISliderSliderEventRef",
-	"UISpriteStateRef":                                 "UnityEngineUISpriteStateRef",
-	"UITextRef":                                        "UnityEngineUITextRef",
-	"UIToggleGroupRef":                                 "UnityEngineUIToggleGroupRef",
-	"UIToggleRef":                                      "UnityEngineUIToggleRef",
-	"UIToggleToggleEventRef":                           "UnityEngineUIToggleToggleEventRef",
-	"UIVertex":                                         "UnityEngineUIVertex",
-	"UIVertexArray":                                    "UnityEngineUIVertexArray",
-	"UIVertexHelperRef":                                "UnityEngineUIVertexHelperRef",
-	"UIVertexRef":                                      "UnityEngineUIVertexRef",
-	"UIVerticalLayoutGroupRef":                         "UnityEngineUIVerticalLayoutGroupRef",
-	"UInt16":                                           "SystemUInt16",
-	"UInt16Array":                                      "SystemUInt16Array",
-	"UInt16Ref":                                        "SystemUInt16Ref",
-	"UInt32":                                           "SystemUInt32",
-	"UInt32Array":                                      "SystemUInt32Array",
-	"UInt32Ref":                                        "SystemUInt32Ref",
-	"UInt64":                                           "SystemUInt64",
-	"UInt64Array":                                      "SystemUInt64Array",
-	"UInt64Ref":                                        "SystemUInt64Ref",
-	"UVChannelFlags":                                   "UnityEngineRenderingUVChannelFlags",
-	"UnicodeCategory":                                  "SystemGlobalizationUnicodeCategory",
-	"Unit":                                             "UnityEngineUICanvasScalerUnit",
-	"UnityAction":                                      "UnityEngineEventsUnityActionUnityEngineVector2",
-	"UnityEngineObject":                                "UnityEngineObject",
-	"UnityEngineObjectArray":                           "UnityEngineObjectArray",
-	"UnityEventCallState":                              "UnityEngineEventsUnityEventCallState",
-	"VRCAudioBank":                                     "VRCSDK3ComponentsVRCAudioBank",
-	"VRCAudioBankArray":                                "VRCSDK3ComponentsVRCAudioBankArray",
-	"VRCAvatarPedestal":                                "VRCSDK3ComponentsVRCAvatarPedestal",
-	"VRCAvatarPedestalArray":                           "VRCSDK3ComponentsVRCAvatarPedestalArray",
-	"VRCCombatSystem":                                  "VRCSDK3ComponentsVRCCombatSystem",
-	"VRCCombatSystemArray":                             "VRCSDK3ComponentsVRCCombatSystemArray",
-	"VRCInputMethod":                                   "VRCSDKBaseVRCInputMethod",
-	"VRCInputSetting":                                  "VRCSDKBaseVRCInputSetting",
-	"VRCObjectSync":                                    "VRCSDK3ComponentsVRCObjectSync",
-	"VRCObjectSyncArray":                               "VRCSDK3ComponentsVRCObjectSyncArray",
-	"VRCPickup":                                        "VRCSDK3ComponentsVRCPickup",
-	"VRCPickupArray":                                   "VRCSDK3ComponentsVRCPickupArray",
-	"VRCPlayerApi":                                     "VRCSDKBaseVRCPlayerApi",
-	"VRCPlayerApiArray":                                "VRCSDKBaseVRCPlayerApiArray",
-	"VRCPortalMarker":                                  "VRCSDK3ComponentsVRCPortalMarker",
-	"VRCPortalMarkerArray":                             "VRCSDK3ComponentsVRCPortalMarkerArray",
-	"VRCSDK3ComponentsVRCAudioBankRef":                 "VRCSDK3ComponentsVRCAudioBankRef",
-	"VRCSDK3ComponentsVRCAvatarPedestalRef":            "VRCSDK3ComponentsVRCAvatarPedestalRef",
-	"VRCSDK3ComponentsVRCCombatSystemRef":              "VRCSDK3ComponentsVRCCombatSystemRef",
-	"VRCSDK3ComponentsVRCObjectSyncRef":                "VRCSDK3ComponentsVRCObjectSyncRef",
-	"VRCSDK3ComponentsVRCPickupRef":                    "VRCSDK3ComponentsVRCPickupRef",
-	"VRCSDK3ComponentsVRCPortalMarkerRef":              "VRCSDK3ComponentsVRCPortalMarkerRef",
-	"VRCSDK3ComponentsVRCStationApiRef":                "VRCSDK3ComponentsVRCStationApiRef",
-	"VRCSDK3ComponentsVRCStationInputRef":              "VRCSDK3ComponentsVRCStationInputRef",
-	"VRCSDK3ComponentsVRCStationRef":                   "VRCSDK3ComponentsVRCStationRef",
-	"VRCSDKBaseInputManagerRef":                        "VRCSDKBaseInputManagerRef",
-	"VRCSDKBaseVRCPlayerApiRef":                        "VRCSDKBaseVRCPlayerApiRef",
-	"VRCSDKBaseVRCPlayerApiTrackingDataRef":            "VRCSDKBaseVRCPlayerApiTrackingDataRef",
-	"VRCStation":                                       "VRCSDK3ComponentsVRCStation",
-	"VRCStationApi":                                    "VRCSDK3ComponentsVRCStationApi",
-	"VRCStationApiArray":                               "VRCSDK3ComponentsVRCStationApiArray",
-	"VRCStationArray":                                  "VRCSDK3ComponentsVRCStationArray",
-	"VRCStationInput":                                  "VRCSDK3ComponentsVRCStationInput",
-	"VRCStationInputArray":                             "VRCSDK3ComponentsVRCStationInputArray",
-	"VRC_EventDispatcher":                              "VRCSDKBaseVRC_EventDispatcher",
-	"VRC_EventHandler":                                 "VRCSDKBaseVRC_EventHandler",
-	"VRC_Pickup":                                       "VRCSDKBaseVRC_Pickup",
-	"Vector2":                                          "UnityEngineVector2",
-	"Vector2Array":                                     "UnityEngineVector2Array",
-	"Vector2Ref":                                       "UnityEngineVector2Ref",
-	"Vector3":                                          "UnityEngineVector3",
-	"Vector3Array":                                     "UnityEngineVector3Array",
-	"Vector3ArrayRef":                                  "UnityEngineVector3ArrayRef",
-	"Vector3Ref":                                       "UnityEngineVector3Ref",
-	"Vector4":                                          "UnityEngineVector4",
-	"Vector4Array":                                     "UnityEngineVector4Array",
-	"Vector4Ref":                                       "UnityEngineVector4Ref",
-	"VelocityOverLifetimeModule":                       "UnityEngineParticleSystemVelocityOverLifetimeModule",
-	"VelocityOverLifetimeModuleArray":                  "UnityEngineParticleSystemVelocityOverLifetimeModuleArray",
-	"VertexHelper":                                     "UnityEngineUIVertexHelper",
-	"VertexHelperArray":                                "UnityEngineUIVertexHelperArray",
-	"VerticalLayoutGroup":                              "UnityEngineUIVerticalLayoutGroup",
-	"VerticalLayoutGroupArray":                         "UnityEngineUIVerticalLayoutGroupArray",
-	"VerticalWrapMode":                                 "UnityEngineVerticalWrapMode",
-	"VrcBroadcastType":                                 "VRCSDKBaseVRC_EventHandlerVrcBroadcastType",
-	"VrcTargetType":                                    "VRCSDKBaseVRC_EventHandlerVrcTargetType",
-	"WheelCollider":                                    "UnityEngineWheelCollider",
-	"WheelColliderArray":                               "UnityEngineWheelColliderArray",
-	"WheelColliderRef":                                 "UnityEngineWheelColliderRef",
-	"WheelFrictionCurve":                               "UnityEngineWheelFrictionCurve",
-	"WheelHitRef":                                      "UnityEngineWheelHitRef",
-	"WheelJoint2D":                                     "UnityEngineWheelJoint2D",
-	"WheelJoint2DArray":                                "UnityEngineWheelJoint2DArray",
-	"WheelJoint2DRef":                                  "UnityEngineWheelJoint2DRef",
-	"WillRenderCanvases":                               "UnityEngineCanvasWillRenderCanvases",
-	"WorldUpType":                                      "UnityEngineAnimationsAimConstraintWorldUpType",
-	"WrapMode":                                         "UnityEngineWrapMode",
-}
+const UdonTypeAINavMeshAgentRef = "UnityEngineAINavMeshAgentRef"
+const UdonTypeAINavMeshDataRef = "UnityEngineAINavMeshDataRef"
+const UdonTypeAINavMeshHitRef = "UnityEngineAINavMeshHitRef"
+const UdonTypeAINavMeshObstacleRef = "UnityEngineAINavMeshObstacleRef"
+const UdonTypeAINavMeshPathRef = "UnityEngineAINavMeshPathRef"
+const UdonTypeAIOffMeshLinkRef = "UnityEngineAIOffMeshLinkRef"
+const UdonTypeAccelerationEvent = "UnityEngineAccelerationEvent"
+const UdonTypeAccelerationEventArray = "UnityEngineAccelerationEventArray"
+const UdonTypeAdditionalCanvasShaderChannels = "UnityEngineAdditionalCanvasShaderChannels"
+const UdonTypeAdjustmentRuleArray = "SystemTimeZoneInfoAdjustmentRuleArray"
+const UdonTypeAimConstraint = "UnityEngineAnimationsAimConstraint"
+const UdonTypeAimConstraintArray = "UnityEngineAnimationsAimConstraintArray"
+const UdonTypeAmbientMode = "UnityEngineRenderingAmbientMode"
+const UdonTypeAnimation = "UnityEngineAnimation"
+const UdonTypeAnimationArray = "UnityEngineAnimationArray"
+const UdonTypeAnimationBlendMode = "UnityEngineAnimationBlendMode"
+const UdonTypeAnimationClip = "UnityEngineAnimationClip"
+const UdonTypeAnimationClipArray = "UnityEngineAnimationClipArray"
+const UdonTypeAnimationClipRef = "UnityEngineAnimationClipRef"
+const UdonTypeAnimationCullingType = "UnityEngineAnimationCullingType"
+const UdonTypeAnimationCurve = "UnityEngineAnimationCurve"
+const UdonTypeAnimationEvent = "UnityEngineAnimationEvent"
+const UdonTypeAnimationEventArray = "UnityEngineAnimationEventArray"
+const UdonTypeAnimationPlayMode = "UnityEngineAnimationPlayMode"
+const UdonTypeAnimationRef = "UnityEngineAnimationRef"
+const UdonTypeAnimationState = "UnityEngineAnimationState"
+const UdonTypeAnimationStateArray = "UnityEngineAnimationStateArray"
+const UdonTypeAnimationStateRef = "UnityEngineAnimationStateRef"
+const UdonTypeAnimationTriggers = "UnityEngineUIAnimationTriggers"
+const UdonTypeAnimationTriggersArray = "UnityEngineUIAnimationTriggersArray"
+const UdonTypeAnimationsAimConstraintRef = "UnityEngineAnimationsAimConstraintRef"
+const UdonTypeAnimationsConstraintSourceRef = "UnityEngineAnimationsConstraintSourceRef"
+const UdonTypeAnimationsLookAtConstraintRef = "UnityEngineAnimationsLookAtConstraintRef"
+const UdonTypeAnimationsParentConstraintRef = "UnityEngineAnimationsParentConstraintRef"
+const UdonTypeAnimationsPositionConstraintRef = "UnityEngineAnimationsPositionConstraintRef"
+const UdonTypeAnimationsRotationConstraintRef = "UnityEngineAnimationsRotationConstraintRef"
+const UdonTypeAnimationsScaleConstraintRef = "UnityEngineAnimationsScaleConstraintRef"
+const UdonTypeAnimator = "UnityEngineAnimator"
+const UdonTypeAnimatorArray = "UnityEngineAnimatorArray"
+const UdonTypeAnimatorClipInfo = "UnityEngineAnimatorClipInfo"
+const UdonTypeAnimatorClipInfoArray = "UnityEngineAnimatorClipInfoArray"
+const UdonTypeAnimatorClipInfoRef = "UnityEngineAnimatorClipInfoRef"
+const UdonTypeAnimatorControllerParameter = "UnityEngineAnimatorControllerParameter"
+const UdonTypeAnimatorControllerParameterArray = "UnityEngineAnimatorControllerParameterArray"
+const UdonTypeAnimatorControllerParameterRef = "UnityEngineAnimatorControllerParameterRef"
+const UdonTypeAnimatorControllerParameterType = "UnityEngineAnimatorControllerParameterType"
+const UdonTypeAnimatorCullingMode = "UnityEngineAnimatorCullingMode"
+const UdonTypeAnimatorOverrideController = "UnityEngineAnimatorOverrideController"
+const UdonTypeAnimatorOverrideControllerArray = "UnityEngineAnimatorOverrideControllerArray"
+const UdonTypeAnimatorOverrideControllerRef = "UnityEngineAnimatorOverrideControllerRef"
+const UdonTypeAnimatorRecorderMode = "UnityEngineAnimatorRecorderMode"
+const UdonTypeAnimatorRef = "UnityEngineAnimatorRef"
+const UdonTypeAnimatorStateInfo = "UnityEngineAnimatorStateInfo"
+const UdonTypeAnimatorStateInfoArray = "UnityEngineAnimatorStateInfoArray"
+const UdonTypeAnimatorStateInfoRef = "UnityEngineAnimatorStateInfoRef"
+const UdonTypeAnimatorTransitionInfo = "UnityEngineAnimatorTransitionInfo"
+const UdonTypeAnimatorTransitionInfoArray = "UnityEngineAnimatorTransitionInfoArray"
+const UdonTypeAnimatorTransitionInfoRef = "UnityEngineAnimatorTransitionInfoRef"
+const UdonTypeAnimatorUpdateMode = "UnityEngineAnimatorUpdateMode"
+const UdonTypeAnimatorUtility = "UnityEngineAnimatorUtility"
+const UdonTypeAnimatorUtilityArray = "UnityEngineAnimatorUtilityArray"
+const UdonTypeAnimatorUtilityRef = "UnityEngineAnimatorUtilityRef"
+const UdonTypeAnisotropicFiltering = "UnityEngineAnisotropicFiltering"
+const UdonTypeAreaEffector2D = "UnityEngineAreaEffector2D"
+const UdonTypeAreaEffector2DArray = "UnityEngineAreaEffector2DArray"
+const UdonTypeAreaEffector2DRef = "UnityEngineAreaEffector2DRef"
+const UdonTypeArray = "SystemArray"
+const UdonTypeAspectMode = "UnityEngineUIAspectRatioFitterAspectMode"
+const UdonTypeAspectRatioFitter = "UnityEngineUIAspectRatioFitter"
+const UdonTypeAspectRatioFitterArray = "UnityEngineUIAspectRatioFitterArray"
+const UdonTypeAudioChorusFilter = "UnityEngineAudioChorusFilter"
+const UdonTypeAudioChorusFilterArray = "UnityEngineAudioChorusFilterArray"
+const UdonTypeAudioChorusFilterRef = "UnityEngineAudioChorusFilterRef"
+const UdonTypeAudioClip = "UnityEngineAudioClip"
+const UdonTypeAudioClipArray = "UnityEngineAudioClipArray"
+const UdonTypeAudioClipLoadType = "UnityEngineAudioClipLoadType"
+const UdonTypeAudioClipRef = "UnityEngineAudioClipRef"
+const UdonTypeAudioDataLoadState = "UnityEngineAudioDataLoadState"
+const UdonTypeAudioDistortionFilter = "UnityEngineAudioDistortionFilter"
+const UdonTypeAudioDistortionFilterArray = "UnityEngineAudioDistortionFilterArray"
+const UdonTypeAudioDistortionFilterRef = "UnityEngineAudioDistortionFilterRef"
+const UdonTypeAudioEchoFilter = "UnityEngineAudioEchoFilter"
+const UdonTypeAudioEchoFilterArray = "UnityEngineAudioEchoFilterArray"
+const UdonTypeAudioEchoFilterRef = "UnityEngineAudioEchoFilterRef"
+const UdonTypeAudioHighPassFilter = "UnityEngineAudioHighPassFilter"
+const UdonTypeAudioHighPassFilterArray = "UnityEngineAudioHighPassFilterArray"
+const UdonTypeAudioHighPassFilterRef = "UnityEngineAudioHighPassFilterRef"
+const UdonTypeAudioLowPassFilter = "UnityEngineAudioLowPassFilter"
+const UdonTypeAudioLowPassFilterArray = "UnityEngineAudioLowPassFilterArray"
+const UdonTypeAudioLowPassFilterRef = "UnityEngineAudioLowPassFilterRef"
+const UdonTypeAudioMixerGroup = "UnityEngineAudioAudioMixerGroup"
+const UdonTypeAudioReverbFilter = "UnityEngineAudioReverbFilter"
+const UdonTypeAudioReverbFilterArray = "UnityEngineAudioReverbFilterArray"
+const UdonTypeAudioReverbFilterRef = "UnityEngineAudioReverbFilterRef"
+const UdonTypeAudioReverbPreset = "UnityEngineAudioReverbPreset"
+const UdonTypeAudioReverbZone = "UnityEngineAudioReverbZone"
+const UdonTypeAudioReverbZoneArray = "UnityEngineAudioReverbZoneArray"
+const UdonTypeAudioReverbZoneRef = "UnityEngineAudioReverbZoneRef"
+const UdonTypeAudioRolloffMode = "UnityEngineAudioRolloffMode"
+const UdonTypeAudioSource = "UnityEngineAudioSource"
+const UdonTypeAudioSourceArray = "UnityEngineAudioSourceArray"
+const UdonTypeAudioSourceCurveType = "UnityEngineAudioSourceCurveType"
+const UdonTypeAudioSourceRef = "UnityEngineAudioSourceRef"
+const UdonTypeAudioVelocityUpdateMode = "UnityEngineAudioVelocityUpdateMode"
+const UdonTypeAvatar = "UnityEngineAvatar"
+const UdonTypeAvatarArray = "UnityEngineAvatarArray"
+const UdonTypeAvatarBuilder = "UnityEngineAvatarBuilder"
+const UdonTypeAvatarBuilderArray = "UnityEngineAvatarBuilderArray"
+const UdonTypeAvatarBuilderRef = "UnityEngineAvatarBuilderRef"
+const UdonTypeAvatarIKGoal = "UnityEngineAvatarIKGoal"
+const UdonTypeAvatarIKHint = "UnityEngineAvatarIKHint"
+const UdonTypeAvatarMask = "UnityEngineAvatarMask"
+const UdonTypeAvatarMaskArray = "UnityEngineAvatarMaskArray"
+const UdonTypeAvatarMaskBodyPart = "UnityEngineAvatarMaskBodyPart"
+const UdonTypeAvatarMaskRef = "UnityEngineAvatarMaskRef"
+const UdonTypeAvatarRef = "UnityEngineAvatarRef"
+const UdonTypeAvatarTarget = "UnityEngineAvatarTarget"
+const UdonTypeAxis = "UnityEngineUIGridLayoutGroupAxis"
+const UdonTypeAxisEventData = "UnityEngineEventSystemsAxisEventData"
+const UdonTypeBase64FormattingOptions = "SystemBase64FormattingOptions"
+const UdonTypeBaseEventData = "UnityEngineEventSystemsBaseEventData"
+const UdonTypeBaseMeshEffect = "UnityEngineUIBaseMeshEffect"
+const UdonTypeBaseMeshEffectArray = "UnityEngineUIBaseMeshEffectArray"
+const UdonTypeBillboardAsset = "UnityEngineBillboardAsset"
+const UdonTypeBillboardRenderer = "UnityEngineBillboardRenderer"
+const UdonTypeBillboardRendererArray = "UnityEngineBillboardRendererArray"
+const UdonTypeBillboardRendererRef = "UnityEngineBillboardRendererRef"
+const UdonTypeBlendWeights = "UnityEngineBlendWeights"
+const UdonTypeBlockingObjects = "UnityEngineUIGraphicRaycasterBlockingObjects"
+const UdonTypeBoneWeightArray = "UnityEngineBoneWeightArray"
+const UdonTypeBoolean = "SystemBoolean"
+const UdonTypeBooleanArray = "SystemBooleanArray"
+const UdonTypeBooleanRef = "SystemBooleanRef"
+const UdonTypeBounds = "UnityEngineBounds"
+const UdonTypeBoundsArray = "UnityEngineBoundsArray"
+const UdonTypeBoundsRef = "UnityEngineBoundsRef"
+const UdonTypeBoxCollider = "UnityEngineBoxCollider"
+const UdonTypeBoxCollider2D = "UnityEngineBoxCollider2D"
+const UdonTypeBoxCollider2DArray = "UnityEngineBoxCollider2DArray"
+const UdonTypeBoxCollider2DRef = "UnityEngineBoxCollider2DRef"
+const UdonTypeBoxColliderArray = "UnityEngineBoxColliderArray"
+const UdonTypeBoxColliderRef = "UnityEngineBoxColliderRef"
+const UdonTypeBurst = "UnityEngineParticleSystemBurst"
+const UdonTypeBurstArray = "UnityEngineParticleSystemBurstArray"
+const UdonTypeButton = "UnityEngineUIButton"
+const UdonTypeButtonArray = "UnityEngineUIButtonArray"
+const UdonTypeButtonClickedEvent = "UnityEngineUIButtonButtonClickedEvent"
+const UdonTypeButtonClickedEventArray = "UnityEngineUIButtonButtonClickedEventArray"
+const UdonTypeByte = "SystemByte"
+const UdonTypeByteArray = "SystemByteArray"
+const UdonTypeByteRef = "SystemByteRef"
+const UdonTypeCamera = "UnityEngineCamera"
+const UdonTypeCameraArray = "UnityEngineCameraArray"
+const UdonTypeCameraClearFlags = "UnityEngineCameraClearFlags"
+const UdonTypeCameraEvent = "UnityEngineRenderingCameraEvent"
+const UdonTypeCameraRef = "UnityEngineCameraRef"
+const UdonTypeCameraType = "UnityEngineCameraType"
+const UdonTypeCanvas = "UnityEngineCanvas"
+const UdonTypeCanvasArray = "UnityEngineCanvasArray"
+const UdonTypeCanvasRef = "UnityEngineCanvasRef"
+const UdonTypeCanvasRenderer = "UnityEngineCanvasRenderer"
+const UdonTypeCanvasRendererArray = "UnityEngineCanvasRendererArray"
+const UdonTypeCanvasRendererRef = "UnityEngineCanvasRendererRef"
+const UdonTypeCanvasScaler = "UnityEngineUICanvasScaler"
+const UdonTypeCanvasScalerArray = "UnityEngineUICanvasScalerArray"
+const UdonTypeCanvasUpdate = "UnityEngineUICanvasUpdate"
+const UdonTypeCapsuleCollider = "UnityEngineCapsuleCollider"
+const UdonTypeCapsuleCollider2D = "UnityEngineCapsuleCollider2D"
+const UdonTypeCapsuleCollider2DArray = "UnityEngineCapsuleCollider2DArray"
+const UdonTypeCapsuleCollider2DRef = "UnityEngineCapsuleCollider2DRef"
+const UdonTypeCapsuleColliderArray = "UnityEngineCapsuleColliderArray"
+const UdonTypeCapsuleColliderRef = "UnityEngineCapsuleColliderRef"
+const UdonTypeCapsuleDirection2D = "UnityEngineCapsuleDirection2D"
+const UdonTypeChar = "SystemChar"
+const UdonTypeCharArray = "SystemCharArray"
+const UdonTypeCharEnumerator = "SystemCharEnumerator"
+const UdonTypeCharRef = "SystemCharRef"
+const UdonTypeCharacterValidation = "UnityEngineUIInputFieldCharacterValidation"
+const UdonTypeCircleCollider2D = "UnityEngineCircleCollider2D"
+const UdonTypeCircleCollider2DArray = "UnityEngineCircleCollider2DArray"
+const UdonTypeCircleCollider2DRef = "UnityEngineCircleCollider2DRef"
+const UdonTypeClipping = "UnityEngineUIClipping"
+const UdonTypeCollider = "UnityEngineCollider"
+const UdonTypeCollider2D = "UnityEngineCollider2D"
+const UdonTypeCollider2DArray = "UnityEngineCollider2DArray"
+const UdonTypeCollider2DRef = "UnityEngineCollider2DRef"
+const UdonTypeColliderArray = "UnityEngineColliderArray"
+const UdonTypeColliderDistance2D = "UnityEngineColliderDistance2D"
+const UdonTypeColliderRef = "UnityEngineColliderRef"
+const UdonTypeCollision = "UnityEngineCollision"
+const UdonTypeCollision2D = "UnityEngineCollision2D"
+const UdonTypeCollision2DArray = "UnityEngineCollision2DArray"
+const UdonTypeCollision2DRef = "UnityEngineCollision2DRef"
+const UdonTypeCollisionArray = "UnityEngineCollisionArray"
+const UdonTypeCollisionDetectionMode = "UnityEngineCollisionDetectionMode"
+const UdonTypeCollisionDetectionMode2D = "UnityEngineCollisionDetectionMode2D"
+const UdonTypeCollisionModule = "UnityEngineParticleSystemCollisionModule"
+const UdonTypeCollisionModuleArray = "UnityEngineParticleSystemCollisionModuleArray"
+const UdonTypeCollisionRef = "UnityEngineCollisionRef"
+const UdonTypeColor = "UnityEngineColor"
+const UdonTypeColor32 = "UnityEngineColor32"
+const UdonTypeColor32Array = "UnityEngineColor32Array"
+const UdonTypeColorArray = "UnityEngineColorArray"
+const UdonTypeColorBlock = "UnityEngineUIColorBlock"
+const UdonTypeColorBlockArray = "UnityEngineUIColorBlockArray"
+const UdonTypeColorBySpeedModule = "UnityEngineParticleSystemColorBySpeedModule"
+const UdonTypeColorBySpeedModuleArray = "UnityEngineParticleSystemColorBySpeedModuleArray"
+const UdonTypeColorOverLifetimeModule = "UnityEngineParticleSystemColorOverLifetimeModule"
+const UdonTypeColorRef = "UnityEngineColorRef"
+const UdonTypeColorSpace = "UnityEngineColorSpace"
+const UdonTypeCombineInstanceArray = "UnityEngineCombineInstanceArray"
+const UdonTypeCommandBuffer = "UnityEngineRenderingCommandBuffer"
+const UdonTypeCommandBufferArray = "UnityEngineRenderingCommandBufferArray"
+const UdonTypeCompareOptions = "SystemGlobalizationCompareOptions"
+const UdonTypeCompass = "UnityEngineCompass"
+const UdonTypeComponent = "UnityEngineComponent"
+const UdonTypeComponentArray = "UnityEngineComponentArray"
+const UdonTypeComponentRef = "UnityEngineComponentRef"
+const UdonTypeCompositeCollider2D = "UnityEngineCompositeCollider2D"
+const UdonTypeCompositeCollider2DArray = "UnityEngineCompositeCollider2DArray"
+const UdonTypeCompositeCollider2DRef = "UnityEngineCompositeCollider2DRef"
+const UdonTypeComputeBuffer = "UnityEngineComputeBuffer"
+const UdonTypeComputeQueueType = "UnityEngineRenderingComputeQueueType"
+const UdonTypeConfigurableJoint = "UnityEngineConfigurableJoint"
+const UdonTypeConfigurableJointArray = "UnityEngineConfigurableJointArray"
+const UdonTypeConfigurableJointMotion = "UnityEngineConfigurableJointMotion"
+const UdonTypeConfigurableJointRef = "UnityEngineConfigurableJointRef"
+const UdonTypeConstantForce = "UnityEngineConstantForce"
+const UdonTypeConstantForce2D = "UnityEngineConstantForce2D"
+const UdonTypeConstantForce2DArray = "UnityEngineConstantForce2DArray"
+const UdonTypeConstantForce2DRef = "UnityEngineConstantForce2DRef"
+const UdonTypeConstantForceArray = "UnityEngineConstantForceArray"
+const UdonTypeConstantForceRef = "UnityEngineConstantForceRef"
+const UdonTypeConstraint = "UnityEngineUIGridLayoutGroupConstraint"
+const UdonTypeConstraintSource = "UnityEngineAnimationsConstraintSource"
+const UdonTypeConstraintSourceArray = "UnityEngineAnimationsConstraintSourceArray"
+const UdonTypeContactFilter2D = "UnityEngineContactFilter2D"
+const UdonTypeContactPoint = "UnityEngineContactPoint"
+const UdonTypeContactPoint2D = "UnityEngineContactPoint2D"
+const UdonTypeContactPoint2DArray = "UnityEngineContactPoint2DArray"
+const UdonTypeContactPoint2DRef = "UnityEngineContactPoint2DRef"
+const UdonTypeContactPointArray = "UnityEngineContactPointArray"
+const UdonTypeContactPointRef = "UnityEngineContactPointRef"
+const UdonTypeContentSizeFitter = "UnityEngineUIContentSizeFitter"
+const UdonTypeContentSizeFitterArray = "UnityEngineUIContentSizeFitterArray"
+const UdonTypeContentType = "UnityEngineUIInputFieldContentType"
+const UdonTypeConvert = "SystemConvert"
+const UdonTypeCorner = "UnityEngineUIGridLayoutGroupCorner"
+const UdonTypeCoroutine = "UnityEngineCoroutine"
+const UdonTypeCubemap = "UnityEngineCubemap"
+const UdonTypeCullStateChangedEvent = "UnityEngineUIMaskableGraphicCullStateChangedEvent"
+const UdonTypeCultureInfo = "SystemGlobalizationCultureInfo"
+const UdonTypeCustomDataModule = "UnityEngineParticleSystemCustomDataModule"
+const UdonTypeCustomDataModuleArray = "UnityEngineParticleSystemCustomDataModuleArray"
+const UdonTypeDateTime = "SystemDateTime"
+const UdonTypeDateTimeArray = "SystemDateTimeArray"
+const UdonTypeDateTimeKind = "SystemDateTimeKind"
+const UdonTypeDateTimeOffset = "SystemDateTimeOffset"
+const UdonTypeDateTimeRef = "SystemDateTimeRef"
+const UdonTypeDateTimeStyles = "SystemGlobalizationDateTimeStyles"
+const UdonTypeDayOfWeek = "SystemDayOfWeek"
+const UdonTypeDebug = "UnityEngineDebug"
+const UdonTypeDebugArray = "UnityEngineDebugArray"
+const UdonTypeDebugRef = "UnityEngineDebugRef"
+const UdonTypeDecimal = "SystemDecimal"
+const UdonTypeDefaultControls = "UnityEngineUIDefaultControls"
+const UdonTypeDepthTextureMode = "UnityEngineDepthTextureMode"
+const UdonTypeDeviceOrientation = "UnityEngineDeviceOrientation"
+const UdonTypeDirection = "UnityEngineUISliderDirection"
+const UdonTypeDistanceJoint2D = "UnityEngineDistanceJoint2D"
+const UdonTypeDistanceJoint2DArray = "UnityEngineDistanceJoint2DArray"
+const UdonTypeDistanceJoint2DRef = "UnityEngineDistanceJoint2DRef"
+const UdonTypeDouble = "SystemDouble"
+const UdonTypeDoubleArray = "SystemDoubleArray"
+const UdonTypeDoubleRef = "SystemDoubleRef"
+const UdonTypeDropdown = "UnityEngineUIDropdown"
+const UdonTypeDropdownArray = "UnityEngineUIDropdownArray"
+const UdonTypeDropdownEvent = "UnityEngineUIDropdownDropdownEvent"
+const UdonTypeDropdownEventArray = "UnityEngineUIDropdownDropdownEventArray"
+const UdonTypeDurationUnit = "UnityEngineDurationUnit"
+const UdonTypeEdge = "UnityEngineRectTransformEdge"
+const UdonTypeEdgeCollider2D = "UnityEngineEdgeCollider2D"
+const UdonTypeEdgeCollider2DArray = "UnityEngineEdgeCollider2DArray"
+const UdonTypeEdgeCollider2DRef = "UnityEngineEdgeCollider2DRef"
+const UdonTypeEffector2D = "UnityEngineEffector2D"
+const UdonTypeEffector2DArray = "UnityEngineEffector2DArray"
+const UdonTypeEffector2DRef = "UnityEngineEffector2DRef"
+const UdonTypeEffectorForceMode2D = "UnityEngineEffectorForceMode2D"
+const UdonTypeEffectorSelection2D = "UnityEngineEffectorSelection2D"
+const UdonTypeEmissionModule = "UnityEngineParticleSystemEmissionModule"
+const UdonTypeEmissionModuleArray = "UnityEngineParticleSystemEmissionModuleArray"
+const UdonTypeEmitParams = "UnityEngineParticleSystemEmitParams"
+const UdonTypeEmitParamsArray = "UnityEngineParticleSystemEmitParamsArray"
+const UdonTypeEvent = "UnityEngineEvent"
+const UdonTypeException = "SystemException"
+const UdonTypeExperimentalAnimationsMuscleHandleRef = "UnityEngineExperimentalAnimationsMuscleHandleRef"
+const UdonTypeExternalForcesModule = "UnityEngineParticleSystemExternalForcesModule"
+const UdonTypeExternalForcesModuleArray = "UnityEngineParticleSystemExternalForcesModuleArray"
+const UdonTypeFFTWindow = "UnityEngineFFTWindow"
+const UdonTypeFillMethod = "UnityEngineUIImageFillMethod"
+const UdonTypeFitMode = "UnityEngineUIContentSizeFitterFitMode"
+const UdonTypeFixedJoint = "UnityEngineFixedJoint"
+const UdonTypeFixedJoint2D = "UnityEngineFixedJoint2D"
+const UdonTypeFixedJoint2DArray = "UnityEngineFixedJoint2DArray"
+const UdonTypeFixedJoint2DRef = "UnityEngineFixedJoint2DRef"
+const UdonTypeFixedJointArray = "UnityEngineFixedJointArray"
+const UdonTypeFixedJointRef = "UnityEngineFixedJointRef"
+const UdonTypeFlare = "UnityEngineFlare"
+const UdonTypeFogMode = "UnityEngineFogMode"
+const UdonTypeFont = "UnityEngineFont"
+const UdonTypeFontData = "UnityEngineUIFontData"
+const UdonTypeFontDataArray = "UnityEngineUIFontDataArray"
+const UdonTypeFontStyle = "UnityEngineFontStyle"
+const UdonTypeForceMode = "UnityEngineForceMode"
+const UdonTypeForceMode2D = "UnityEngineForceMode2D"
+const UdonTypeForceOverLifetimeModule = "UnityEngineParticleSystemForceOverLifetimeModule"
+const UdonTypeForceOverLifetimeModuleArray = "UnityEngineParticleSystemForceOverLifetimeModuleArray"
+const UdonTypeFrictionJoint2D = "UnityEngineFrictionJoint2D"
+const UdonTypeFrictionJoint2DArray = "UnityEngineFrictionJoint2DArray"
+const UdonTypeFrictionJoint2DRef = "UnityEngineFrictionJoint2DRef"
+const UdonTypeFrustumPlanes = "UnityEngineFrustumPlanes"
+const UdonTypeFunc = "SystemFuncUnityEngineUIILayoutElementSystemSingle"
+const UdonTypeGameObject = "UnityEngineGameObject"
+const UdonTypeGameObjectArray = "UnityEngineGameObjectArray"
+const UdonTypeGameObjectRef = "UnityEngineGameObjectRef"
+const UdonTypeGateFitMode = "UnityEngineCameraGateFitMode"
+const UdonTypeGateFitParameters = "UnityEngineCameraGateFitParameters"
+const UdonTypeGenerationType = "UnityEngineCompositeCollider2DGenerationType"
+const UdonTypeGeometryType = "UnityEngineCompositeCollider2DGeometryType"
+const UdonTypeGradient = "UnityEngineGradient"
+const UdonTypeGraphic = "UnityEngineUIGraphic"
+const UdonTypeGraphicArray = "UnityEngineUIGraphicArray"
+const UdonTypeGraphicRaycaster = "UnityEngineUIGraphicRaycaster"
+const UdonTypeGraphicRaycasterArray = "UnityEngineUIGraphicRaycasterArray"
+const UdonTypeGridLayoutGroup = "UnityEngineUIGridLayoutGroup"
+const UdonTypeGridLayoutGroupArray = "UnityEngineUIGridLayoutGroupArray"
+const UdonTypeGuid = "SystemGuid"
+const UdonTypeGyroscope = "UnityEngineGyroscope"
+const UdonTypeHideFlags = "UnityEngineHideFlags"
+const UdonTypeHingeJoint = "UnityEngineHingeJoint"
+const UdonTypeHingeJoint2D = "UnityEngineHingeJoint2D"
+const UdonTypeHingeJoint2DArray = "UnityEngineHingeJoint2DArray"
+const UdonTypeHingeJoint2DRef = "UnityEngineHingeJoint2DRef"
+const UdonTypeHingeJointArray = "UnityEngineHingeJointArray"
+const UdonTypeHingeJointRef = "UnityEngineHingeJointRef"
+const UdonTypeHorizontalLayoutGroup = "UnityEngineUIHorizontalLayoutGroup"
+const UdonTypeHorizontalLayoutGroupArray = "UnityEngineUIHorizontalLayoutGroupArray"
+const UdonTypeHorizontalOrVerticalLayoutGroup = "UnityEngineUIHorizontalOrVerticalLayoutGroup"
+const UdonTypeHorizontalOrVerticalLayoutGroupArray = "UnityEngineUIHorizontalOrVerticalLayoutGroupArray"
+const UdonTypeHorizontalWrapMode = "UnityEngineHorizontalWrapMode"
+const UdonTypeHumanBodyBones = "UnityEngineHumanBodyBones"
+const UdonTypeHumanBone = "UnityEngineHumanBone"
+const UdonTypeHumanBoneArray = "UnityEngineHumanBoneArray"
+const UdonTypeHumanBoneRef = "UnityEngineHumanBoneRef"
+const UdonTypeHumanDescription = "UnityEngineHumanDescription"
+const UdonTypeHumanDescriptionArray = "UnityEngineHumanDescriptionArray"
+const UdonTypeHumanDescriptionRef = "UnityEngineHumanDescriptionRef"
+const UdonTypeHumanLimit = "UnityEngineHumanLimit"
+const UdonTypeHumanLimitArray = "UnityEngineHumanLimitArray"
+const UdonTypeHumanLimitRef = "UnityEngineHumanLimitRef"
+const UdonTypeHumanPartDof = "UnityEngineHumanPartDof"
+const UdonTypeHumanPose = "UnityEngineHumanPose"
+const UdonTypeHumanPoseArray = "UnityEngineHumanPoseArray"
+const UdonTypeHumanPoseHandler = "UnityEngineHumanPoseHandler"
+const UdonTypeHumanPoseHandlerArray = "UnityEngineHumanPoseHandlerArray"
+const UdonTypeHumanPoseHandlerRef = "UnityEngineHumanPoseHandlerRef"
+const UdonTypeHumanPoseRef = "UnityEngineHumanPoseRef"
+const UdonTypeHumanTrait = "UnityEngineHumanTrait"
+const UdonTypeHumanTraitArray = "UnityEngineHumanTraitArray"
+const UdonTypeHumanTraitRef = "UnityEngineHumanTraitRef"
+const UdonTypeIClippable = "UnityEngineUIIClippable"
+const UdonTypeIEnumerable = "SystemCollectionsGenericIEnumerableVRCSDKBaseVRC_EventHandlerVrcEvent"
+const UdonTypeIEnumerator = "SystemCollectionsIEnumerator"
+const UdonTypeIFormatProvider = "SystemIFormatProvider"
+const UdonTypeIList = "SystemCollectionsGenericIListSystemCollectionsGenericKeyValuePairUnityEngineAnimationClipUnityEngineAnimationClip"
+const UdonTypeILogger = "UnityEngineILogger"
+const UdonTypeIMECompositionMode = "UnityEngineIMECompositionMode"
+const UdonTypeIUdonEventReceiver = "VRCUdonCommonInterfacesIUdonEventReceiver"
+const UdonTypeImage = "UnityEngineUIImage"
+const UdonTypeImageArray = "UnityEngineUIImageArray"
+const UdonTypeIndexFormat = "UnityEngineRenderingIndexFormat"
+const UdonTypeInheritVelocityModule = "UnityEngineParticleSystemInheritVelocityModule"
+const UdonTypeInheritVelocityModuleArray = "UnityEngineParticleSystemInheritVelocityModuleArray"
+const UdonTypeInput = "UnityEngineInput"
+const UdonTypeInputArray = "UnityEngineInputArray"
+const UdonTypeInputField = "UnityEngineUIInputField"
+const UdonTypeInputFieldArray = "UnityEngineUIInputFieldArray"
+const UdonTypeInputManager = "VRCSDKBaseInputManager"
+const UdonTypeInputManagerArray = "VRCSDKBaseInputManagerArray"
+const UdonTypeInputRef = "UnityEngineInputRef"
+const UdonTypeInputType = "UnityEngineUIInputFieldInputType"
+const UdonTypeInt16 = "SystemInt16"
+const UdonTypeInt16Array = "SystemInt16Array"
+const UdonTypeInt16Ref = "SystemInt16Ref"
+const UdonTypeInt32 = "SystemInt32"
+const UdonTypeInt32Array = "SystemInt32Array"
+const UdonTypeInt32ArrayRef = "SystemInt32ArrayRef"
+const UdonTypeInt32Ref = "SystemInt32Ref"
+const UdonTypeInt64 = "SystemInt64"
+const UdonTypeInt64Array = "SystemInt64Array"
+const UdonTypeInt64Ref = "SystemInt64Ref"
+const UdonTypeJoint = "UnityEngineJoint"
+const UdonTypeJoint2D = "UnityEngineJoint2D"
+const UdonTypeJoint2DArray = "UnityEngineJoint2DArray"
+const UdonTypeJoint2DRef = "UnityEngineJoint2DRef"
+const UdonTypeJointAngleLimits2D = "UnityEngineJointAngleLimits2D"
+const UdonTypeJointArray = "UnityEngineJointArray"
+const UdonTypeJointDrive = "UnityEngineJointDrive"
+const UdonTypeJointLimitState2D = "UnityEngineJointLimitState2D"
+const UdonTypeJointLimits = "UnityEngineJointLimits"
+const UdonTypeJointMotor = "UnityEngineJointMotor"
+const UdonTypeJointMotor2D = "UnityEngineJointMotor2D"
+const UdonTypeJointProjectionMode = "UnityEngineJointProjectionMode"
+const UdonTypeJointRef = "UnityEngineJointRef"
+const UdonTypeJointSpring = "UnityEngineJointSpring"
+const UdonTypeJointSuspension2D = "UnityEngineJointSuspension2D"
+const UdonTypeJointTranslationLimits2D = "UnityEngineJointTranslationLimits2D"
+const UdonTypeKeyCode = "UnityEngineKeyCode"
+const UdonTypeLayerMask = "UnityEngineLayerMask"
+const UdonTypeLayerMaskArray = "UnityEngineLayerMaskArray"
+const UdonTypeLayerMaskRef = "UnityEngineLayerMaskRef"
+const UdonTypeLayoutElement = "UnityEngineUILayoutElement"
+const UdonTypeLayoutElementArray = "UnityEngineUILayoutElementArray"
+const UdonTypeLayoutGroup = "UnityEngineUILayoutGroup"
+const UdonTypeLayoutGroupArray = "UnityEngineUILayoutGroupArray"
+const UdonTypeLayoutRebuilder = "UnityEngineUILayoutRebuilder"
+const UdonTypeLayoutRebuilderArray = "UnityEngineUILayoutRebuilderArray"
+const UdonTypeLayoutUtility = "UnityEngineUILayoutUtility"
+const UdonTypeLight = "UnityEngineLight"
+const UdonTypeLightArray = "UnityEngineLightArray"
+const UdonTypeLightBakingOutput = "UnityEngineLightBakingOutput"
+const UdonTypeLightEvent = "UnityEngineRenderingLightEvent"
+const UdonTypeLightProbeUsage = "UnityEngineRenderingLightProbeUsage"
+const UdonTypeLightRef = "UnityEngineLightRef"
+const UdonTypeLightRenderMode = "UnityEngineLightRenderMode"
+const UdonTypeLightShadowCasterMode = "UnityEngineLightShadowCasterMode"
+const UdonTypeLightShadowResolution = "UnityEngineRenderingLightShadowResolution"
+const UdonTypeLightShadows = "UnityEngineLightShadows"
+const UdonTypeLightType = "UnityEngineLightType"
+const UdonTypeLightsModule = "UnityEngineParticleSystemLightsModule"
+const UdonTypeLightsModuleArray = "UnityEngineParticleSystemLightsModuleArray"
+const UdonTypeLimitVelocityOverLifetimeModule = "UnityEngineParticleSystemLimitVelocityOverLifetimeModule"
+const UdonTypeLimitVelocityOverLifetimeModuleArray = "UnityEngineParticleSystemLimitVelocityOverLifetimeModuleArray"
+const UdonTypeLineAlignment = "UnityEngineLineAlignment"
+const UdonTypeLineRenderer = "UnityEngineLineRenderer"
+const UdonTypeLineRendererArray = "UnityEngineLineRendererArray"
+const UdonTypeLineRendererRef = "UnityEngineLineRendererRef"
+const UdonTypeLineTextureMode = "UnityEngineLineTextureMode"
+const UdonTypeLineType = "UnityEngineUIInputFieldLineType"
+const UdonTypeList = "SystemCollectionsGenericListVRCSDKBaseVRCPlayerApi"
+const UdonTypeLocationService = "UnityEngineLocationService"
+const UdonTypeLookAtConstraint = "UnityEngineAnimationsLookAtConstraint"
+const UdonTypeLookAtConstraintArray = "UnityEngineAnimationsLookAtConstraintArray"
+const UdonTypeMainModule = "UnityEngineParticleSystemMainModule"
+const UdonTypeMainModuleArray = "UnityEngineParticleSystemMainModuleArray"
+const UdonTypeMask = "UnityEngineUIMask"
+const UdonTypeMaskArray = "UnityEngineUIMaskArray"
+const UdonTypeMaskUtilities = "UnityEngineUIMaskUtilities"
+const UdonTypeMaskUtilitiesArray = "UnityEngineUIMaskUtilitiesArray"
+const UdonTypeMaskableGraphic = "UnityEngineUIMaskableGraphic"
+const UdonTypeMaskableGraphicArray = "UnityEngineUIMaskableGraphicArray"
+const UdonTypeMatchTargetWeightMask = "UnityEngineMatchTargetWeightMask"
+const UdonTypeMatchTargetWeightMaskArray = "UnityEngineMatchTargetWeightMaskArray"
+const UdonTypeMatchTargetWeightMaskRef = "UnityEngineMatchTargetWeightMaskRef"
+const UdonTypeMaterial = "UnityEngineMaterial"
+const UdonTypeMaterialArray = "UnityEngineMaterialArray"
+const UdonTypeMaterialGlobalIlluminationFlags = "UnityEngineMaterialGlobalIlluminationFlags"
+const UdonTypeMaterialPropertyBlock = "UnityEngineMaterialPropertyBlock"
+const UdonTypeMaterialPropertyBlockArray = "UnityEngineMaterialPropertyBlockArray"
+const UdonTypeMaterialPropertyBlockRef = "UnityEngineMaterialPropertyBlockRef"
+const UdonTypeMaterialRef = "UnityEngineMaterialRef"
+const UdonTypeMathf = "UnityEngineMathf"
+const UdonTypeMathfArray = "UnityEngineMathfArray"
+const UdonTypeMathfRef = "UnityEngineMathfRef"
+const UdonTypeMatrix4x4 = "UnityEngineMatrix4x4"
+const UdonTypeMatrix4x4Array = "UnityEngineMatrix4x4Array"
+const UdonTypeMatrix4x4Ref = "UnityEngineMatrix4x4Ref"
+const UdonTypeMesh = "UnityEngineMesh"
+const UdonTypeMeshArray = "UnityEngineMeshArray"
+const UdonTypeMeshCollider = "UnityEngineMeshCollider"
+const UdonTypeMeshColliderArray = "UnityEngineMeshColliderArray"
+const UdonTypeMeshColliderCookingOptions = "UnityEngineMeshColliderCookingOptions"
+const UdonTypeMeshColliderRef = "UnityEngineMeshColliderRef"
+const UdonTypeMeshFilter = "UnityEngineMeshFilter"
+const UdonTypeMeshFilterArray = "UnityEngineMeshFilterArray"
+const UdonTypeMeshFilterRef = "UnityEngineMeshFilterRef"
+const UdonTypeMeshRef = "UnityEngineMeshRef"
+const UdonTypeMeshRenderer = "UnityEngineMeshRenderer"
+const UdonTypeMeshRendererArray = "UnityEngineMeshRendererArray"
+const UdonTypeMeshRendererRef = "UnityEngineMeshRendererRef"
+const UdonTypeMeshTopology = "UnityEngineMeshTopology"
+const UdonTypeMinMaxCurve = "UnityEngineParticleSystemMinMaxCurve"
+const UdonTypeMinMaxCurveArray = "UnityEngineParticleSystemMinMaxCurveArray"
+const UdonTypeMinMaxGradient = "UnityEngineParticleSystemMinMaxGradient"
+const UdonTypeMinMaxGradientArray = "UnityEngineParticleSystemMinMaxGradientArray"
+const UdonTypeMode = "UnityEngineUINavigationMode"
+const UdonTypeMonoOrStereoscopicEye = "UnityEngineCameraMonoOrStereoscopicEye"
+const UdonTypeMotion = "UnityEngineMotion"
+const UdonTypeMotionArray = "UnityEngineMotionArray"
+const UdonTypeMotionRef = "UnityEngineMotionRef"
+const UdonTypeMotionVectorGenerationMode = "UnityEngineMotionVectorGenerationMode"
+const UdonTypeMovementType = "UnityEngineUIScrollRectMovementType"
+const UdonTypeMuscleHandle = "UnityEngineExperimentalAnimationsMuscleHandle"
+const UdonTypeMuscleHandleArray = "UnityEngineExperimentalAnimationsMuscleHandleArray"
+const UdonTypeNavMesh = "UnityEngineAINavMesh"
+const UdonTypeNavMeshAgent = "UnityEngineAINavMeshAgent"
+const UdonTypeNavMeshAgentArray = "UnityEngineAINavMeshAgentArray"
+const UdonTypeNavMeshBuildSettings = "UnityEngineAINavMeshBuildSettings"
+const UdonTypeNavMeshData = "UnityEngineAINavMeshData"
+const UdonTypeNavMeshDataArray = "UnityEngineAINavMeshDataArray"
+const UdonTypeNavMeshDataInstance = "UnityEngineAINavMeshDataInstance"
+const UdonTypeNavMeshLinkData = "UnityEngineAINavMeshLinkData"
+const UdonTypeNavMeshLinkInstance = "UnityEngineAINavMeshLinkInstance"
+const UdonTypeNavMeshObstacle = "UnityEngineAINavMeshObstacle"
+const UdonTypeNavMeshObstacleArray = "UnityEngineAINavMeshObstacleArray"
+const UdonTypeNavMeshObstacleShape = "UnityEngineAINavMeshObstacleShape"
+const UdonTypeNavMeshPath = "UnityEngineAINavMeshPath"
+const UdonTypeNavMeshPathArray = "UnityEngineAINavMeshPathArray"
+const UdonTypeNavMeshPathStatus = "UnityEngineAINavMeshPathStatus"
+const UdonTypeNavMeshQueryFilter = "UnityEngineAINavMeshQueryFilter"
+const UdonTypeNavMeshTriangulation = "UnityEngineAINavMeshTriangulation"
+const UdonTypeNavigation = "UnityEngineUINavigation"
+const UdonTypeNavigationArray = "UnityEngineUINavigationArray"
+const UdonTypeNetworkEventTarget = "VRCUdonCommonInterfacesNetworkEventTarget"
+const UdonTypeNetworking = "VRCSDKBaseNetworking"
+const UdonTypeNoiseModule = "UnityEngineParticleSystemNoiseModule"
+const UdonTypeNoiseModuleArray = "UnityEngineParticleSystemNoiseModuleArray"
+const UdonTypeNormalizationForm = "SystemTextNormalizationForm"
+const UdonTypeNumberStyles = "SystemGlobalizationNumberStyles"
+const UdonTypeObject = "SystemObject"
+const UdonTypeObjectArray = "SystemObjectArray"
+const UdonTypeObjectRef = "UnityEngineObjectRef"
+const UdonTypeObstacleAvoidanceType = "UnityEngineAIObstacleAvoidanceType"
+const UdonTypeOffMeshLink = "UnityEngineAIOffMeshLink"
+const UdonTypeOffMeshLinkArray = "UnityEngineAIOffMeshLinkArray"
+const UdonTypeOffMeshLinkData = "UnityEngineAIOffMeshLinkData"
+const UdonTypeOnChangeEvent = "UnityEngineUIInputFieldOnChangeEvent"
+const UdonTypeOnChangeEventArray = "UnityEngineUIInputFieldOnChangeEventArray"
+const UdonTypeOnValidateInput = "UnityEngineUIInputFieldOnValidateInput"
+const UdonTypeOpaqueSortMode = "UnityEngineRenderingOpaqueSortMode"
+const UdonTypeOptionData = "UnityEngineUIDropdownOptionData"
+const UdonTypeOptionDataArray = "UnityEngineUIDropdownOptionDataArray"
+const UdonTypeOptionDataList = "UnityEngineUIDropdownOptionDataList"
+const UdonTypeOptionDataListArray = "UnityEngineUIDropdownOptionDataListArray"
+const UdonTypeOutline = "UnityEngineUIOutline"
+const UdonTypeOutlineArray = "UnityEngineUIOutlineArray"
+const UdonTypePCMReaderCallback = "UnityEngineAudioClipPCMReaderCallback"
+const UdonTypePCMSetPositionCallback = "UnityEngineAudioClipPCMSetPositionCallback"
+const UdonTypeParentConstraint = "UnityEngineAnimationsParentConstraint"
+const UdonTypeParentConstraintArray = "UnityEngineAnimationsParentConstraintArray"
+const UdonTypeParticle = "UnityEngineParticleSystemParticle"
+const UdonTypeParticleArray = "UnityEngineParticleSystemParticleArray"
+const UdonTypeParticleSystem = "UnityEngineParticleSystem"
+const UdonTypeParticleSystemAnimationMode = "UnityEngineParticleSystemAnimationMode"
+const UdonTypeParticleSystemAnimationTimeMode = "UnityEngineParticleSystemAnimationTimeMode"
+const UdonTypeParticleSystemAnimationType = "UnityEngineParticleSystemAnimationType"
+const UdonTypeParticleSystemArray = "UnityEngineParticleSystemArray"
+const UdonTypeParticleSystemBurstRef = "UnityEngineParticleSystemBurstRef"
+const UdonTypeParticleSystemCollisionMode = "UnityEngineParticleSystemCollisionMode"
+const UdonTypeParticleSystemCollisionModuleRef = "UnityEngineParticleSystemCollisionModuleRef"
+const UdonTypeParticleSystemCollisionQuality = "UnityEngineParticleSystemCollisionQuality"
+const UdonTypeParticleSystemCollisionType = "UnityEngineParticleSystemCollisionType"
+const UdonTypeParticleSystemColorBySpeedModuleRef = "UnityEngineParticleSystemColorBySpeedModuleRef"
+const UdonTypeParticleSystemCullingMode = "UnityEngineParticleSystemCullingMode"
+const UdonTypeParticleSystemCurveMode = "UnityEngineParticleSystemCurveMode"
+const UdonTypeParticleSystemCustomData = "UnityEngineParticleSystemCustomData"
+const UdonTypeParticleSystemCustomDataMode = "UnityEngineParticleSystemCustomDataMode"
+const UdonTypeParticleSystemCustomDataModuleRef = "UnityEngineParticleSystemCustomDataModuleRef"
+const UdonTypeParticleSystemEmissionModuleRef = "UnityEngineParticleSystemEmissionModuleRef"
+const UdonTypeParticleSystemEmitParamsRef = "UnityEngineParticleSystemEmitParamsRef"
+const UdonTypeParticleSystemEmitterVelocityMode = "UnityEngineParticleSystemEmitterVelocityMode"
+const UdonTypeParticleSystemExternalForcesModuleRef = "UnityEngineParticleSystemExternalForcesModuleRef"
+const UdonTypeParticleSystemForceField = "UnityEngineParticleSystemForceField"
+const UdonTypeParticleSystemForceOverLifetimeModuleRef = "UnityEngineParticleSystemForceOverLifetimeModuleRef"
+const UdonTypeParticleSystemGameObjectFilter = "UnityEngineParticleSystemGameObjectFilter"
+const UdonTypeParticleSystemGradientMode = "UnityEngineParticleSystemGradientMode"
+const UdonTypeParticleSystemInheritVelocityMode = "UnityEngineParticleSystemInheritVelocityMode"
+const UdonTypeParticleSystemInheritVelocityModuleRef = "UnityEngineParticleSystemInheritVelocityModuleRef"
+const UdonTypeParticleSystemLightsModuleRef = "UnityEngineParticleSystemLightsModuleRef"
+const UdonTypeParticleSystemLimitVelocityOverLifetimeModuleRef = "UnityEngineParticleSystemLimitVelocityOverLifetimeModuleRef"
+const UdonTypeParticleSystemMainModuleRef = "UnityEngineParticleSystemMainModuleRef"
+const UdonTypeParticleSystemMeshShapeType = "UnityEngineParticleSystemMeshShapeType"
+const UdonTypeParticleSystemMinMaxCurveRef = "UnityEngineParticleSystemMinMaxCurveRef"
+const UdonTypeParticleSystemMinMaxGradientRef = "UnityEngineParticleSystemMinMaxGradientRef"
+const UdonTypeParticleSystemNoiseModuleRef = "UnityEngineParticleSystemNoiseModuleRef"
+const UdonTypeParticleSystemNoiseQuality = "UnityEngineParticleSystemNoiseQuality"
+const UdonTypeParticleSystemOverlapAction = "UnityEngineParticleSystemOverlapAction"
+const UdonTypeParticleSystemParticleRef = "UnityEngineParticleSystemParticleRef"
+const UdonTypeParticleSystemRef = "UnityEngineParticleSystemRef"
+const UdonTypeParticleSystemRingBufferMode = "UnityEngineParticleSystemRingBufferMode"
+const UdonTypeParticleSystemRotationBySpeedModuleRef = "UnityEngineParticleSystemRotationBySpeedModuleRef"
+const UdonTypeParticleSystemRotationOverLifetimeModuleRef = "UnityEngineParticleSystemRotationOverLifetimeModuleRef"
+const UdonTypeParticleSystemScalingMode = "UnityEngineParticleSystemScalingMode"
+const UdonTypeParticleSystemShapeModuleRef = "UnityEngineParticleSystemShapeModuleRef"
+const UdonTypeParticleSystemShapeMultiModeValue = "UnityEngineParticleSystemShapeMultiModeValue"
+const UdonTypeParticleSystemShapeTextureChannel = "UnityEngineParticleSystemShapeTextureChannel"
+const UdonTypeParticleSystemShapeType = "UnityEngineParticleSystemShapeType"
+const UdonTypeParticleSystemSimulationSpace = "UnityEngineParticleSystemSimulationSpace"
+const UdonTypeParticleSystemSizeBySpeedModuleRef = "UnityEngineParticleSystemSizeBySpeedModuleRef"
+const UdonTypeParticleSystemSizeOverLifetimeModuleRef = "UnityEngineParticleSystemSizeOverLifetimeModuleRef"
+const UdonTypeParticleSystemStopAction = "UnityEngineParticleSystemStopAction"
+const UdonTypeParticleSystemStopBehavior = "UnityEngineParticleSystemStopBehavior"
+const UdonTypeParticleSystemSubEmitterProperties = "UnityEngineParticleSystemSubEmitterProperties"
+const UdonTypeParticleSystemSubEmitterType = "UnityEngineParticleSystemSubEmitterType"
+const UdonTypeParticleSystemSubEmittersModuleRef = "UnityEngineParticleSystemSubEmittersModuleRef"
+const UdonTypeParticleSystemTextureSheetAnimationModuleRef = "UnityEngineParticleSystemTextureSheetAnimationModuleRef"
+const UdonTypeParticleSystemTrailMode = "UnityEngineParticleSystemTrailMode"
+const UdonTypeParticleSystemTrailModuleRef = "UnityEngineParticleSystemTrailModuleRef"
+const UdonTypeParticleSystemTrailTextureMode = "UnityEngineParticleSystemTrailTextureMode"
+const UdonTypeParticleSystemTriggerModuleRef = "UnityEngineParticleSystemTriggerModuleRef"
+const UdonTypeParticleSystemVelocityOverLifetimeModuleRef = "UnityEngineParticleSystemVelocityOverLifetimeModuleRef"
+const UdonTypePhysicMaterial = "UnityEnginePhysicMaterial"
+const UdonTypePhysicMaterialArray = "UnityEnginePhysicMaterialArray"
+const UdonTypePhysicMaterialCombine = "UnityEnginePhysicMaterialCombine"
+const UdonTypePhysicMaterialRef = "UnityEnginePhysicMaterialRef"
+const UdonTypePhysics = "UnityEnginePhysics"
+const UdonTypePhysics2D = "UnityEnginePhysics2D"
+const UdonTypePhysics2DArray = "UnityEnginePhysics2DArray"
+const UdonTypePhysics2DRef = "UnityEnginePhysics2DRef"
+const UdonTypePhysicsArray = "UnityEnginePhysicsArray"
+const UdonTypePhysicsJobOptions2D = "UnityEnginePhysicsJobOptions2D"
+const UdonTypePhysicsMaterial2D = "UnityEnginePhysicsMaterial2D"
+const UdonTypePhysicsMaterial2DArray = "UnityEnginePhysicsMaterial2DArray"
+const UdonTypePhysicsMaterial2DRef = "UnityEnginePhysicsMaterial2DRef"
+const UdonTypePhysicsRef = "UnityEnginePhysicsRef"
+const UdonTypePhysicsScene = "UnityEnginePhysicsScene"
+const UdonTypePhysicsScene2D = "UnityEnginePhysicsScene2D"
+const UdonTypePickupHand = "VRCSDKBaseVRC_PickupPickupHand"
+const UdonTypePlane = "UnityEnginePlane"
+const UdonTypePlatformEffector2D = "UnityEnginePlatformEffector2D"
+const UdonTypePlatformEffector2DArray = "UnityEnginePlatformEffector2DArray"
+const UdonTypePlatformEffector2DRef = "UnityEnginePlatformEffector2DRef"
+const UdonTypePlayMode = "UnityEnginePlayMode"
+const UdonTypePlayableGraph = "UnityEnginePlayablesPlayableGraph"
+const UdonTypePointEffector2D = "UnityEnginePointEffector2D"
+const UdonTypePointEffector2DArray = "UnityEnginePointEffector2DArray"
+const UdonTypePointEffector2DRef = "UnityEnginePointEffector2DRef"
+const UdonTypePointerEventData = "UnityEngineEventSystemsPointerEventData"
+const UdonTypePolygonCollider2D = "UnityEnginePolygonCollider2D"
+const UdonTypePolygonCollider2DArray = "UnityEnginePolygonCollider2DArray"
+const UdonTypePolygonCollider2DRef = "UnityEnginePolygonCollider2DRef"
+const UdonTypePositionAsUV1 = "UnityEngineUIPositionAsUV1"
+const UdonTypePositionAsUV1Array = "UnityEngineUIPositionAsUV1Array"
+const UdonTypePositionConstraint = "UnityEngineAnimationsPositionConstraint"
+const UdonTypePositionConstraintArray = "UnityEngineAnimationsPositionConstraintArray"
+const UdonTypePrimitiveType = "UnityEnginePrimitiveType"
+const UdonTypeQualitySettings = "UnityEngineQualitySettings"
+const UdonTypeQualitySettingsArray = "UnityEngineQualitySettingsArray"
+const UdonTypeQualitySettingsRef = "UnityEngineQualitySettingsRef"
+const UdonTypeQuaternion = "UnityEngineQuaternion"
+const UdonTypeQuaternionArray = "UnityEngineQuaternionArray"
+const UdonTypeQuaternionRef = "UnityEngineQuaternionRef"
+const UdonTypeQueryTriggerInteraction = "UnityEngineQueryTriggerInteraction"
+const UdonTypeQueueMode = "UnityEngineQueueMode"
+const UdonTypeRandom = "UnityEngineRandom"
+const UdonTypeRandomArray = "UnityEngineRandomArray"
+const UdonTypeRandomRef = "UnityEngineRandomRef"
+const UdonTypeRawImage = "UnityEngineUIRawImage"
+const UdonTypeRawImageArray = "UnityEngineUIRawImageArray"
+const UdonTypeRay = "UnityEngineRay"
+const UdonTypeRayArray = "UnityEngineRayArray"
+const UdonTypeRayRef = "UnityEngineRayRef"
+const UdonTypeRaycastHit = "UnityEngineRaycastHit"
+const UdonTypeRaycastHit2D = "UnityEngineRaycastHit2D"
+const UdonTypeRaycastHit2DArray = "UnityEngineRaycastHit2DArray"
+const UdonTypeRaycastHit2DRef = "UnityEngineRaycastHit2DRef"
+const UdonTypeRaycastHitArray = "UnityEngineRaycastHitArray"
+const UdonTypeRaycastHitRef = "UnityEngineRaycastHitRef"
+const UdonTypeReadOnlyCollection = "SystemCollectionsObjectModelReadOnlyCollectionSystemTimeZoneInfo"
+const UdonTypeReapplyDrivenProperties = "UnityEngineRectTransformReapplyDrivenProperties"
+const UdonTypeRect = "UnityEngineRect"
+const UdonTypeRectMask2D = "UnityEngineUIRectMask2D"
+const UdonTypeRectMask2DArray = "UnityEngineUIRectMask2DArray"
+const UdonTypeRectOffset = "UnityEngineRectOffset"
+const UdonTypeRectTransform = "UnityEngineRectTransform"
+const UdonTypeRectTransformArray = "UnityEngineRectTransformArray"
+const UdonTypeRectTransformRef = "UnityEngineRectTransformRef"
+const UdonTypeRelativeJoint2D = "UnityEngineRelativeJoint2D"
+const UdonTypeRelativeJoint2DArray = "UnityEngineRelativeJoint2DArray"
+const UdonTypeRelativeJoint2DRef = "UnityEngineRelativeJoint2DRef"
+const UdonTypeRenderBuffer = "UnityEngineRenderBuffer"
+const UdonTypeRenderBufferArray = "UnityEngineRenderBufferArray"
+const UdonTypeRenderMode = "UnityEngineRenderMode"
+const UdonTypeRenderSettings = "UnityEngineRenderSettings"
+const UdonTypeRenderSettingsArray = "UnityEngineRenderSettingsArray"
+const UdonTypeRenderSettingsRef = "UnityEngineRenderSettingsRef"
+const UdonTypeRenderTexture = "UnityEngineRenderTexture"
+const UdonTypeRenderer = "UnityEngineRenderer"
+const UdonTypeRendererArray = "UnityEngineRendererArray"
+const UdonTypeRendererExtensions = "UnityEngineRendererExtensions"
+const UdonTypeRendererRef = "UnityEngineRendererRef"
+const UdonTypeRenderingPath = "UnityEngineRenderingPath"
+const UdonTypeResources = "UnityEngineUIDefaultControlsResources"
+const UdonTypeResourcesArray = "UnityEngineUIDefaultControlsResourcesArray"
+const UdonTypeRigidbody = "UnityEngineRigidbody"
+const UdonTypeRigidbody2D = "UnityEngineRigidbody2D"
+const UdonTypeRigidbody2DArray = "UnityEngineRigidbody2DArray"
+const UdonTypeRigidbody2DRef = "UnityEngineRigidbody2DRef"
+const UdonTypeRigidbodyArray = "UnityEngineRigidbodyArray"
+const UdonTypeRigidbodyConstraints = "UnityEngineRigidbodyConstraints"
+const UdonTypeRigidbodyConstraints2D = "UnityEngineRigidbodyConstraints2D"
+const UdonTypeRigidbodyInterpolation = "UnityEngineRigidbodyInterpolation"
+const UdonTypeRigidbodyInterpolation2D = "UnityEngineRigidbodyInterpolation2D"
+const UdonTypeRigidbodyRef = "UnityEngineRigidbodyRef"
+const UdonTypeRigidbodySleepMode2D = "UnityEngineRigidbodySleepMode2D"
+const UdonTypeRigidbodyType2D = "UnityEngineRigidbodyType2D"
+const UdonTypeRotationBySpeedModule = "UnityEngineParticleSystemRotationBySpeedModule"
+const UdonTypeRotationBySpeedModuleArray = "UnityEngineParticleSystemRotationBySpeedModuleArray"
+const UdonTypeRotationConstraint = "UnityEngineAnimationsRotationConstraint"
+const UdonTypeRotationConstraintArray = "UnityEngineAnimationsRotationConstraintArray"
+const UdonTypeRotationDriveMode = "UnityEngineRotationDriveMode"
+const UdonTypeRotationOverLifetimeModule = "UnityEngineParticleSystemRotationOverLifetimeModule"
+const UdonTypeRotationOverLifetimeModuleArray = "UnityEngineParticleSystemRotationOverLifetimeModuleArray"
+const UdonTypeRuntimeAnimatorController = "UnityEngineRuntimeAnimatorController"
+const UdonTypeRuntimeAnimatorControllerArray = "UnityEngineRuntimeAnimatorControllerArray"
+const UdonTypeRuntimeAnimatorControllerRef = "UnityEngineRuntimeAnimatorControllerRef"
+const UdonTypeRuntimeTypeHandle = "SystemRuntimeTypeHandle"
+const UdonTypeSByte = "SystemSByte"
+const UdonTypeSByteArray = "SystemSByteArray"
+const UdonTypeSByteRef = "SystemSByteRef"
+const UdonTypeScaleConstraint = "UnityEngineAnimationsScaleConstraint"
+const UdonTypeScaleConstraintArray = "UnityEngineAnimationsScaleConstraintArray"
+const UdonTypeScaleMode = "UnityEngineUICanvasScalerScaleMode"
+const UdonTypeScene = "UnityEngineSceneManagementScene"
+const UdonTypeScreenMatchMode = "UnityEngineUICanvasScalerScreenMatchMode"
+const UdonTypeScriptableObject = "UnityEngineScriptableObject"
+const UdonTypeScrollEvent = "UnityEngineUIScrollbarScrollEvent"
+const UdonTypeScrollEventArray = "UnityEngineUIScrollbarScrollEventArray"
+const UdonTypeScrollRect = "UnityEngineUIScrollRect"
+const UdonTypeScrollRectArray = "UnityEngineUIScrollRectArray"
+const UdonTypeScrollRectEvent = "UnityEngineUIScrollRectScrollRectEvent"
+const UdonTypeScrollRectEventArray = "UnityEngineUIScrollRectScrollRectEventArray"
+const UdonTypeScrollbar = "UnityEngineUIScrollbar"
+const UdonTypeScrollbarArray = "UnityEngineUIScrollbarArray"
+const UdonTypeScrollbarVisibility = "UnityEngineUIScrollRectScrollbarVisibility"
+const UdonTypeSelectable = "UnityEngineUISelectable"
+const UdonTypeSelectableArray = "UnityEngineUISelectableArray"
+const UdonTypeSendMessageOptions = "UnityEngineSendMessageOptions"
+const UdonTypeShader = "UnityEngineShader"
+const UdonTypeShadow = "UnityEngineUIShadow"
+const UdonTypeShadowArray = "UnityEngineUIShadowArray"
+const UdonTypeShadowCastingMode = "UnityEngineRenderingShadowCastingMode"
+const UdonTypeShadowMapPass = "UnityEngineRenderingShadowMapPass"
+const UdonTypeShadowProjection = "UnityEngineShadowProjection"
+const UdonTypeShadowQuality = "UnityEngineShadowQuality"
+const UdonTypeShadowResolution = "UnityEngineShadowResolution"
+const UdonTypeShadowmaskMode = "UnityEngineShadowmaskMode"
+const UdonTypeShapeModule = "UnityEngineParticleSystemShapeModule"
+const UdonTypeShapeModuleArray = "UnityEngineParticleSystemShapeModuleArray"
+const UdonTypeSingle = "SystemSingle"
+const UdonTypeSingleArray = "SystemSingle[]"
+const UdonTypeSingleRef = "SystemSingleRef"
+const UdonTypeSizeBySpeedModule = "UnityEngineParticleSystemSizeBySpeedModule"
+const UdonTypeSizeBySpeedModuleArray = "UnityEngineParticleSystemSizeBySpeedModuleArray"
+const UdonTypeSizeOverLifetimeModule = "UnityEngineParticleSystemSizeOverLifetimeModule"
+const UdonTypeSizeOverLifetimeModuleArray = "UnityEngineParticleSystemSizeOverLifetimeModuleArray"
+const UdonTypeSkeletonBone = "UnityEngineSkeletonBone"
+const UdonTypeSkeletonBoneArray = "UnityEngineSkeletonBoneArray"
+const UdonTypeSkeletonBoneRef = "UnityEngineSkeletonBoneRef"
+const UdonTypeSkinQuality = "UnityEngineSkinQuality"
+const UdonTypeSkinnedMeshRenderer = "UnityEngineSkinnedMeshRenderer"
+const UdonTypeSkinnedMeshRendererArray = "UnityEngineSkinnedMeshRendererArray"
+const UdonTypeSkinnedMeshRendererRef = "UnityEngineSkinnedMeshRendererRef"
+const UdonTypeSlider = "UnityEngineUISlider"
+const UdonTypeSliderArray = "UnityEngineUISliderArray"
+const UdonTypeSliderEvent = "UnityEngineUISliderSliderEvent"
+const UdonTypeSliderEventArray = "UnityEngineUISliderSliderEventArray"
+const UdonTypeSliderJoint2D = "UnityEngineSliderJoint2D"
+const UdonTypeSliderJoint2DArray = "UnityEngineSliderJoint2DArray"
+const UdonTypeSliderJoint2DRef = "UnityEngineSliderJoint2DRef"
+const UdonTypeSoftJointLimit = "UnityEngineSoftJointLimit"
+const UdonTypeSoftJointLimitSpring = "UnityEngineSoftJointLimitSpring"
+const UdonTypeSpace = "UnityEngineSpace"
+const UdonTypeSpawnOrientation = "VRCSDKBaseVRC_SceneDescriptorSpawnOrientation"
+const UdonTypeSphereCollider = "UnityEngineSphereCollider"
+const UdonTypeSphereColliderArray = "UnityEngineSphereColliderArray"
+const UdonTypeSphereColliderRef = "UnityEngineSphereColliderRef"
+const UdonTypeSphericalHarmonicsL2 = "UnityEngineRenderingSphericalHarmonicsL2"
+const UdonTypeSphericalHarmonicsL2Array = "UnityEngineRenderingSphericalHarmonicsL2Array"
+const UdonTypeSpringJoint = "UnityEngineSpringJoint"
+const UdonTypeSpringJointArray = "UnityEngineSpringJointArray"
+const UdonTypeSpringJointRef = "UnityEngineSpringJointRef"
+const UdonTypeSprite = "UnityEngineSprite"
+const UdonTypeSpriteDrawMode = "UnityEngineSpriteDrawMode"
+const UdonTypeSpriteMaskInteraction = "UnityEngineSpriteMaskInteraction"
+const UdonTypeSpriteRenderer = "UnityEngineSpriteRenderer"
+const UdonTypeSpriteRendererArray = "UnityEngineSpriteRendererArray"
+const UdonTypeSpriteRendererRef = "UnityEngineSpriteRendererRef"
+const UdonTypeSpriteSortPoint = "UnityEngineSpriteSortPoint"
+const UdonTypeSpriteState = "UnityEngineUISpriteState"
+const UdonTypeSpriteStateArray = "UnityEngineUISpriteStateArray"
+const UdonTypeSpriteTileMode = "UnityEngineSpriteTileMode"
+const UdonTypeState = "UnityEngineRandomState"
+const UdonTypeStateMachineBehaviourArray = "UnityEngineStateMachineBehaviourArray"
+const UdonTypeStereoTargetEyeMask = "UnityEngineStereoTargetEyeMask"
+const UdonTypeStereoscopicEye = "UnityEngineCameraStereoscopicEye"
+const UdonTypeString = "SystemString"
+const UdonTypeStringArray = "SystemStringArray"
+const UdonTypeStringComparison = "SystemStringComparison"
+const UdonTypeStringRef = "SystemStringRef"
+const UdonTypeStringSplitOptions = "SystemStringSplitOptions"
+const UdonTypeStructLayoutAttribute = "SystemRuntimeInteropServicesStructLayoutAttribute"
+const UdonTypeSubEmittersModule = "UnityEngineParticleSystemSubEmittersModule"
+const UdonTypeSubEmittersModuleArray = "UnityEngineParticleSystemSubEmittersModuleArray"
+const UdonTypeSubmitEvent = "UnityEngineUIInputFieldSubmitEvent"
+const UdonTypeSubmitEventArray = "UnityEngineUIInputFieldSubmitEventArray"
+const UdonTypeSurfaceEffector2D = "UnityEngineSurfaceEffector2D"
+const UdonTypeSurfaceEffector2DArray = "UnityEngineSurfaceEffector2DArray"
+const UdonTypeSurfaceEffector2DRef = "UnityEngineSurfaceEffector2DRef"
+const UdonTypeSystemSingleArray = "SystemSingleArray"
+const UdonTypeTargetJoint2D = "UnityEngineTargetJoint2D"
+const UdonTypeTargetJoint2DArray = "UnityEngineTargetJoint2DArray"
+const UdonTypeTargetJoint2DRef = "UnityEngineTargetJoint2DRef"
+const UdonTypeText = "UnityEngineUIText"
+const UdonTypeTextAnchor = "UnityEngineTextAnchor"
+const UdonTypeTextArray = "UnityEngineUITextArray"
+const UdonTypeTextAsset = "UnityEngineTextAsset"
+const UdonTypeTextAssetArray = "UnityEngineTextAssetArray"
+const UdonTypeTextAssetRef = "UnityEngineTextAssetRef"
+const UdonTypeTextGenerationSettings = "UnityEngineTextGenerationSettings"
+const UdonTypeTextGenerator = "UnityEngineTextGenerator"
+const UdonTypeTexture = "UnityEngineTexture"
+const UdonTypeTexture2D = "UnityEngineTexture2D"
+const UdonTypeTextureSheetAnimationModule = "UnityEngineParticleSystemTextureSheetAnimationModule"
+const UdonTypeTextureSheetAnimationModuleArray = "UnityEngineParticleSystemTextureSheetAnimationModuleArray"
+const UdonTypeTime = "UnityEngineTime"
+const UdonTypeTimeArray = "UnityEngineTimeArray"
+const UdonTypeTimeRef = "UnityEngineTimeRef"
+const UdonTypeTimeSpan = "SystemTimeSpan"
+const UdonTypeTimeSpanArray = "SystemTimeSpanArray"
+const UdonTypeTimeZoneInfo = "SystemTimeZoneInfo"
+const UdonTypeTimeZoneInfoArray = "SystemTimeZoneInfoArray"
+const UdonTypeTimeZoneInfoRef = "SystemTimeZoneInfoRef"
+const UdonTypeToggle = "UnityEngineUIToggle"
+const UdonTypeToggleArray = "UnityEngineUIToggleArray"
+const UdonTypeToggleEvent = "UnityEngineUIToggleToggleEvent"
+const UdonTypeToggleEventArray = "UnityEngineUIToggleToggleEventArray"
+const UdonTypeToggleGroup = "UnityEngineUIToggleGroup"
+const UdonTypeToggleGroupArray = "UnityEngineUIToggleGroupArray"
+const UdonTypeTouch = "UnityEngineTouch"
+const UdonTypeTouchArray = "UnityEngineTouchArray"
+const UdonTypeTouchScreenKeyboard = "UnityEngineTouchScreenKeyboard"
+const UdonTypeTouchScreenKeyboardType = "UnityEngineTouchScreenKeyboardType"
+const UdonTypeTrackingData = "VRCSDKBaseVRCPlayerApiTrackingData"
+const UdonTypeTrackingDataArray = "VRCSDKBaseVRCPlayerApiTrackingDataArray"
+const UdonTypeTrackingDataType = "VRCSDKBaseVRCPlayerApiTrackingDataType"
+const UdonTypeTrailModule = "UnityEngineParticleSystemTrailModule"
+const UdonTypeTrailModuleArray = "UnityEngineParticleSystemTrailModuleArray"
+const UdonTypeTrailRenderer = "UnityEngineTrailRenderer"
+const UdonTypeTrailRendererArray = "UnityEngineTrailRendererArray"
+const UdonTypeTrailRendererRef = "UnityEngineTrailRendererRef"
+const UdonTypeTransform = "UnityEngineTransform"
+const UdonTypeTransformArray = "UnityEngineTransformArray"
+const UdonTypeTransformRef = "UnityEngineTransformRef"
+const UdonTypeTransition = "UnityEngineUISelectableTransition"
+const UdonTypeTransparencySortMode = "UnityEngineTransparencySortMode"
+const UdonTypeTriggerModule = "UnityEngineParticleSystemTriggerModule"
+const UdonTypeTriggerModuleArray = "UnityEngineParticleSystemTriggerModuleArray"
+const UdonTypeType = "UnityEngineUIImageType"
+const UdonTypeTypeArray = "SystemTypeArray"
+const UdonTypeTypeCode = "SystemTypeCode"
+const UdonTypeTypeRef = "SystemTypeRef"
+const UdonTypeUIAnimationTriggersRef = "UnityEngineUIAnimationTriggersRef"
+const UdonTypeUIAspectRatioFitterRef = "UnityEngineUIAspectRatioFitterRef"
+const UdonTypeUIBaseMeshEffectRef = "UnityEngineUIBaseMeshEffectRef"
+const UdonTypeUIButtonButtonClickedEventRef = "UnityEngineUIButtonButtonClickedEventRef"
+const UdonTypeUIButtonRef = "UnityEngineUIButtonRef"
+const UdonTypeUICanvasScalerRef = "UnityEngineUICanvasScalerRef"
+const UdonTypeUIColorBlockRef = "UnityEngineUIColorBlockRef"
+const UdonTypeUIContentSizeFitterRef = "UnityEngineUIContentSizeFitterRef"
+const UdonTypeUIDefaultControlsResourcesRef = "UnityEngineUIDefaultControlsResourcesRef"
+const UdonTypeUIDropdownDropdownEventRef = "UnityEngineUIDropdownDropdownEventRef"
+const UdonTypeUIDropdownOptionDataListRef = "UnityEngineUIDropdownOptionDataListRef"
+const UdonTypeUIDropdownOptionDataRef = "UnityEngineUIDropdownOptionDataRef"
+const UdonTypeUIDropdownRef = "UnityEngineUIDropdownRef"
+const UdonTypeUIFontDataRef = "UnityEngineUIFontDataRef"
+const UdonTypeUIGraphicRaycasterRef = "UnityEngineUIGraphicRaycasterRef"
+const UdonTypeUIGraphicRef = "UnityEngineUIGraphicRef"
+const UdonTypeUIGridLayoutGroupRef = "UnityEngineUIGridLayoutGroupRef"
+const UdonTypeUIHorizontalLayoutGroupRef = "UnityEngineUIHorizontalLayoutGroupRef"
+const UdonTypeUIHorizontalOrVerticalLayoutGroupRef = "UnityEngineUIHorizontalOrVerticalLayoutGroupRef"
+const UdonTypeUIILayoutElementRef = "UnityEngineUIILayoutElementRef"
+const UdonTypeUIImageRef = "UnityEngineUIImageRef"
+const UdonTypeUIInputFieldOnChangeEventRef = "UnityEngineUIInputFieldOnChangeEventRef"
+const UdonTypeUIInputFieldRef = "UnityEngineUIInputFieldRef"
+const UdonTypeUIInputFieldSubmitEventRef = "UnityEngineUIInputFieldSubmitEventRef"
+const UdonTypeUILayoutElementRef = "UnityEngineUILayoutElementRef"
+const UdonTypeUILayoutGroupRef = "UnityEngineUILayoutGroupRef"
+const UdonTypeUILayoutRebuilderRef = "UnityEngineUILayoutRebuilderRef"
+const UdonTypeUIMaskRef = "UnityEngineUIMaskRef"
+const UdonTypeUIMaskUtilitiesRef = "UnityEngineUIMaskUtilitiesRef"
+const UdonTypeUIMaskableGraphicRef = "UnityEngineUIMaskableGraphicRef"
+const UdonTypeUINavigationRef = "UnityEngineUINavigationRef"
+const UdonTypeUIOutlineRef = "UnityEngineUIOutlineRef"
+const UdonTypeUIPositionAsUV1Ref = "UnityEngineUIPositionAsUV1Ref"
+const UdonTypeUIRawImageRef = "UnityEngineUIRawImageRef"
+const UdonTypeUIRectMask2DRef = "UnityEngineUIRectMask2DRef"
+const UdonTypeUIScrollRectRef = "UnityEngineUIScrollRectRef"
+const UdonTypeUIScrollRectScrollRectEventRef = "UnityEngineUIScrollRectScrollRectEventRef"
+const UdonTypeUIScrollbarRef = "UnityEngineUIScrollbarRef"
+const UdonTypeUIScrollbarScrollEventRef = "UnityEngineUIScrollbarScrollEventRef"
+const UdonTypeUISelectableRef = "UnityEngineUISelectableRef"
+const UdonTypeUIShadowRef = "UnityEngineUIShadowRef"
+const UdonTypeUISliderRef = "UnityEngineUISliderRef"
+const UdonTypeUISliderSliderEventRef = "UnityEngineUISliderSliderEventRef"
+const UdonTypeUISpriteStateRef = "UnityEngineUISpriteStateRef"
+const UdonTypeUITextRef = "UnityEngineUITextRef"
+const UdonTypeUIToggleGroupRef = "UnityEngineUIToggleGroupRef"
+const UdonTypeUIToggleRef = "UnityEngineUIToggleRef"
+const UdonTypeUIToggleToggleEventRef = "UnityEngineUIToggleToggleEventRef"
+const UdonTypeUIVertex = "UnityEngineUIVertex"
+const UdonTypeUIVertexArray = "UnityEngineUIVertexArray"
+const UdonTypeUIVertexHelperRef = "UnityEngineUIVertexHelperRef"
+const UdonTypeUIVertexRef = "UnityEngineUIVertexRef"
+const UdonTypeUIVerticalLayoutGroupRef = "UnityEngineUIVerticalLayoutGroupRef"
+const UdonTypeUInt16 = "SystemUInt16"
+const UdonTypeUInt16Array = "SystemUInt16Array"
+const UdonTypeUInt16Ref = "SystemUInt16Ref"
+const UdonTypeUInt32 = "SystemUInt32"
+const UdonTypeUInt32Array = "SystemUInt32Array"
+const UdonTypeUInt32Ref = "SystemUInt32Ref"
+const UdonTypeUInt64 = "SystemUInt64"
+const UdonTypeUInt64Array = "SystemUInt64Array"
+const UdonTypeUInt64Ref = "SystemUInt64Ref"
+const UdonTypeUVChannelFlags = "UnityEngineRenderingUVChannelFlags"
+const UdonTypeUnicodeCategory = "SystemGlobalizationUnicodeCategory"
+const UdonTypeUnit = "UnityEngineUICanvasScalerUnit"
+const UdonTypeUnityAction = "UnityEngineEventsUnityActionUnityEngineVector2"
+const UdonTypeUnityEngineObject = "UnityEngineObject"
+const UdonTypeUnityEngineObjectArray = "UnityEngineObjectArray"
+const UdonTypeUnityEventCallState = "UnityEngineEventsUnityEventCallState"
+const UdonTypeVRCAudioBank = "VRCSDK3ComponentsVRCAudioBank"
+const UdonTypeVRCAudioBankArray = "VRCSDK3ComponentsVRCAudioBankArray"
+const UdonTypeVRCAvatarPedestal = "VRCSDK3ComponentsVRCAvatarPedestal"
+const UdonTypeVRCAvatarPedestalArray = "VRCSDK3ComponentsVRCAvatarPedestalArray"
+const UdonTypeVRCCombatSystem = "VRCSDK3ComponentsVRCCombatSystem"
+const UdonTypeVRCCombatSystemArray = "VRCSDK3ComponentsVRCCombatSystemArray"
+const UdonTypeVRCInputMethod = "VRCSDKBaseVRCInputMethod"
+const UdonTypeVRCInputSetting = "VRCSDKBaseVRCInputSetting"
+const UdonTypeVRCObjectSync = "VRCSDK3ComponentsVRCObjectSync"
+const UdonTypeVRCObjectSyncArray = "VRCSDK3ComponentsVRCObjectSyncArray"
+const UdonTypeVRCPickup = "VRCSDK3ComponentsVRCPickup"
+const UdonTypeVRCPickupArray = "VRCSDK3ComponentsVRCPickupArray"
+const UdonTypeVRCPlayerApi = "VRCSDKBaseVRCPlayerApi"
+const UdonTypeVRCPlayerApiArray = "VRCSDKBaseVRCPlayerApiArray"
+const UdonTypeVRCPortalMarker = "VRCSDK3ComponentsVRCPortalMarker"
+const UdonTypeVRCPortalMarkerArray = "VRCSDK3ComponentsVRCPortalMarkerArray"
+const UdonTypeVRCSDK3ComponentsVRCAudioBankRef = "VRCSDK3ComponentsVRCAudioBankRef"
+const UdonTypeVRCSDK3ComponentsVRCAvatarPedestalRef = "VRCSDK3ComponentsVRCAvatarPedestalRef"
+const UdonTypeVRCSDK3ComponentsVRCCombatSystemRef = "VRCSDK3ComponentsVRCCombatSystemRef"
+const UdonTypeVRCSDK3ComponentsVRCObjectSyncRef = "VRCSDK3ComponentsVRCObjectSyncRef"
+const UdonTypeVRCSDK3ComponentsVRCPickupRef = "VRCSDK3ComponentsVRCPickupRef"
+const UdonTypeVRCSDK3ComponentsVRCPortalMarkerRef = "VRCSDK3ComponentsVRCPortalMarkerRef"
+const UdonTypeVRCSDK3ComponentsVRCStationApiRef = "VRCSDK3ComponentsVRCStationApiRef"
+const UdonTypeVRCSDK3ComponentsVRCStationInputRef = "VRCSDK3ComponentsVRCStationInputRef"
+const UdonTypeVRCSDK3ComponentsVRCStationRef = "VRCSDK3ComponentsVRCStationRef"
+const UdonTypeVRCSDKBaseInputManagerRef = "VRCSDKBaseInputManagerRef"
+const UdonTypeVRCSDKBaseVRCPlayerApiRef = "VRCSDKBaseVRCPlayerApiRef"
+const UdonTypeVRCSDKBaseVRCPlayerApiTrackingDataRef = "VRCSDKBaseVRCPlayerApiTrackingDataRef"
+const UdonTypeVRCStation = "VRCSDK3ComponentsVRCStation"
+const UdonTypeVRCStationApi = "VRCSDK3ComponentsVRCStationApi"
+const UdonTypeVRCStationApiArray = "VRCSDK3ComponentsVRCStationApiArray"
+const UdonTypeVRCStationArray = "VRCSDK3ComponentsVRCStationArray"
+const UdonTypeVRCStationInput = "VRCSDK3ComponentsVRCStationInput"
+const UdonTypeVRCStationInputArray = "VRCSDK3ComponentsVRCStationInputArray"
+const UdonTypeVRC_EventDispatcher = "VRCSDKBaseVRC_EventDispatcher"
+const UdonTypeVRC_EventHandler = "VRCSDKBaseVRC_EventHandler"
+const UdonTypeVRC_Pickup = "VRCSDKBaseVRC_Pickup"
+const UdonTypeVector2 = "UnityEngineVector2"
+const UdonTypeVector2Array = "UnityEngineVector2Array"
+const UdonTypeVector2Ref = "UnityEngineVector2Ref"
+const UdonTypeVector3 = "UnityEngineVector3"
+const UdonTypeVector3Array = "UnityEngineVector3Array"
+const UdonTypeVector3ArrayRef = "UnityEngineVector3ArrayRef"
+const UdonTypeVector3Ref = "UnityEngineVector3Ref"
+const UdonTypeVector4 = "UnityEngineVector4"
+const UdonTypeVector4Array = "UnityEngineVector4Array"
+const UdonTypeVector4Ref = "UnityEngineVector4Ref"
+const UdonTypeVelocityOverLifetimeModule = "UnityEngineParticleSystemVelocityOverLifetimeModule"
+const UdonTypeVelocityOverLifetimeModuleArray = "UnityEngineParticleSystemVelocityOverLifetimeModuleArray"
+const UdonTypeVertexHelper = "UnityEngineUIVertexHelper"
+const UdonTypeVertexHelperArray = "UnityEngineUIVertexHelperArray"
+const UdonTypeVerticalLayoutGroup = "UnityEngineUIVerticalLayoutGroup"
+const UdonTypeVerticalLayoutGroupArray = "UnityEngineUIVerticalLayoutGroupArray"
+const UdonTypeVerticalWrapMode = "UnityEngineVerticalWrapMode"
+const UdonTypeVrcBroadcastType = "VRCSDKBaseVRC_EventHandlerVrcBroadcastType"
+const UdonTypeVrcTargetType = "VRCSDKBaseVRC_EventHandlerVrcTargetType"
+const UdonTypeWheelCollider = "UnityEngineWheelCollider"
+const UdonTypeWheelColliderArray = "UnityEngineWheelColliderArray"
+const UdonTypeWheelColliderRef = "UnityEngineWheelColliderRef"
+const UdonTypeWheelFrictionCurve = "UnityEngineWheelFrictionCurve"
+const UdonTypeWheelHitRef = "UnityEngineWheelHitRef"
+const UdonTypeWheelJoint2D = "UnityEngineWheelJoint2D"
+const UdonTypeWheelJoint2DArray = "UnityEngineWheelJoint2DArray"
+const UdonTypeWheelJoint2DRef = "UnityEngineWheelJoint2DRef"
+const UdonTypeWillRenderCanvases = "UnityEngineCanvasWillRenderCanvases"
+const UdonTypeWorldUpType = "UnityEngineAnimationsAimConstraintWorldUpType"
+const UdonTypeWrapMode = "UnityEngineWrapMode"
