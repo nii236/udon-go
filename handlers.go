@@ -69,24 +69,24 @@ func handleGenDecl(uasm *assembly.UdonAssembly, out io.Writer, decl *ast.GenDecl
 
 			uasm.VarTable.AddVarGlobal(varName)
 		case *ast.FuncLit:
-			funcName := assembly.VarName(vs.Names[0].Name)
-			argTypes := []assembly.UdonTypeName{}
-			for _, field := range l.Type.Params.List {
-				switch f := field.Tag.Kind {
-				case token.INT:
-					argTypes = append(argTypes, f.String())
-				case token.FLOAT:
-					argTypes = append(argTypes, f.String())
-				case token.IMAG:
-					argTypes = append(argTypes, f.String())
-				case token.CHAR:
-					argTypes = append(argTypes, f.String())
-				case token.STRING:
-					argTypes = append(argTypes, f.String())
-				}
+			// funcName := assembly.VarName(vs.Names[0].Name)
+			// argTypes := []assembly.UdonTypeName{}
+			// for _, field := range l.Type.Params.List {
+			// 	switch f := field.Tag.Kind {
+			// 	case token.INT:
+			// 		argTypes = append(argTypes, f.String())
+			// 	case token.FLOAT:
+			// 		argTypes = append(argTypes, f.String())
+			// 	case token.IMAG:
+			// 		argTypes = append(argTypes, f.String())
+			// 	case token.CHAR:
+			// 		argTypes = append(argTypes, f.String())
+			// 	case token.STRING:
+			// 		argTypes = append(argTypes, f.String())
+			// 	}
 
-			}
-			uasm.DefFuncTable.AddFunc(funcName)
+			// }
+			// uasm.DefFuncTable.AddFunc(funcName)
 		}
 
 	}
