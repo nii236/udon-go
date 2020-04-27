@@ -1,7 +1,5 @@
 package sample
 
-import "fmt"
-
 const Test = 1
 
 type Foo struct {
@@ -10,10 +8,16 @@ type Foo struct {
 }
 
 func Sample() int {
-	value := privateMethod(1, "hello")
+	world := 0
+	if world > 1 {
+		world = world + 1
+	} else {
+		world = world - 1
+	}
+	value := privateMethod(world, "hello")
 	return value
 }
 func privateMethod(test int, foo string) int {
-	fmt.Println(foo + " world")
-	return 1
+	test = test + 1
+	return test
 }

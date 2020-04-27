@@ -3,6 +3,7 @@ package assembly
 import (
 	"fmt"
 	"io"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -57,10 +58,10 @@ func (ua *UdonAssembly) MakeCodeSeg() string {
 	ret_code += fmt.Sprintf(".code_end\n")
 	return ret_code
 }
-func (ua *UdonAssembly) GetNextId(name string) string {
+func (ua *UdonAssembly) GetNextId(name string) VarName {
 	ret_id := fmt.Sprintf("__%s_%d", name, ua.IDCounter)
 	ua.IDCounter += 1
-	return ret_id
+	return VarName(ret_id)
 }
 func (ua *UdonAssembly) AddLabelCurrentAddr(label LabelName) {
 	ua.LabelDict[label] = ua.ProgramCounter
@@ -198,7 +199,7 @@ func (ua *UdonAssembly) SetBool(varName VarName, bool_num bool) {
 func (ua *UdonAssembly) SetUint32(varName VarName, num int) {
 	ua.AddInstComment(fmt.Sprintf("%s = %d", varName, num))
 	constVarName := VarName(ua.GetNextId("const_uint32"))
-	ua.VarTable.AddVar(constVarName, UdonTypeName("UInt32"), strconv.Itoa(num))
+	ua.VarTable.AddVar(constVarName, UdonTypeUInt32, strconv.Itoa(num))
 	ua.PushVar(constVarName)
 	ua.PushVar(varName)
 	ua.Copy()
@@ -218,11 +219,21 @@ func (ua *UdonAssembly) ReplaceTmpAdrr(code string) string {
 			result = append(result, line)
 			continue
 		}
+		r := regexp.MustCompile(".*###(.*)###.*")
+		matches := r.FindStringSubmatch(line)
+		if len(matches) < 2 {
+			result = append(result, line)
+			continue
+		}
+		// labelName := matches[1]
+		// fmt.Println(line)
+		line = r.ReplaceAllString(line, "hi")
+		// line = strings.Replace(line, "###", "", -1)
+		// addr := ua.GetAddr(LabelName(labelName))
+		// line += strconv.Itoa(int(addr))
+		result = append(result, line)
 
-		label := strings.ReplaceAll(line, "#", "")
-		addr := ua.GetAddr(LabelName(label))
-		newline := fmt.Sprintf("###%#x###", addr)
-		result = append(result, newline)
+		// fmt.Sprintf("0x%d", addr))
 	}
 	return strings.Join(result, "\n")
 }
