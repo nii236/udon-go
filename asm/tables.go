@@ -1,4 +1,4 @@
-package assembly
+package asm
 
 import (
 	"errors"
@@ -7,36 +7,51 @@ import (
 	"strings"
 )
 
+// VarTable holds local, global variables and current function for contextual purposes
 type VarTable struct {
 	VarDict        map[VarName]*UdonTypeItem
 	GlobalVarNames []VarName
-	CurrentFuncId  *string
+	CurrentFuncID  *LabelName
 }
 
+// UdonTypeItem holds the type name and initial value of a variable
 type UdonTypeItem struct {
 	Name         UdonTypeName
 	InitialValue string
 }
 
+// NewVarTable returns a new var table for the assembler
 func NewVarTable() *VarTable {
 	t := &VarTable{
 		VarDict:        map[VarName]*UdonTypeItem{},
 		GlobalVarNames: []VarName{},
-		CurrentFuncId:  nil,
+		CurrentFuncID:  nil,
 	}
 	return t
 }
 
+// ResolveVarname returns the VarName for the current function, avoiding naming collisions across functions
 func (vt *VarTable) ResolveVarname(varName VarName) VarName {
-	tmpVarname := VarName(fmt.Sprintf("%s_%s", *vt.CurrentFuncId, varName))
-
+	tmpVarname := VarName(fmt.Sprintf("%s_%s", *vt.CurrentFuncID, varName))
 	_, exists := vt.VarDict[tmpVarname]
-	if vt.CurrentFuncId != nil && exists {
+	if vt.CurrentFuncID != nil && exists {
 		return tmpVarname
 	}
 	return varName
 
 }
+
+// ClearCurrentFuncID will set the current func id to nil
+func (vt *VarTable) ClearCurrentFuncID(label LabelName) {
+	vt.CurrentFuncID = nil
+}
+
+// SetCurrentFuncID sets the current func ID for contextual execution
+func (vt *VarTable) SetCurrentFuncID(label LabelName) {
+	vt.CurrentFuncID = &label
+}
+
+// AddVarGlobal adds varName to the global variables
 func (vt *VarTable) AddVarGlobal(varName VarName) error {
 	for _, savedVarName := range vt.GlobalVarNames {
 		if varName == savedVarName {
@@ -46,6 +61,8 @@ func (vt *VarTable) AddVarGlobal(varName VarName) error {
 	vt.GlobalVarNames = append(vt.GlobalVarNames, varName)
 	return nil
 }
+
+// AddVar adds varName to the variable table
 func (vt *VarTable) AddVar(varName VarName, typeName UdonTypeName, initValueStr string) error {
 	exists := vt.ExistVar(varName)
 	if exists {
@@ -58,6 +75,7 @@ func (vt *VarTable) AddVar(varName VarName, typeName UdonTypeName, initValueStr 
 	return nil
 }
 
+// GetVarType returns the UdonType of the varName if it exists
 func (vt *VarTable) GetVarType(varName VarName) (UdonTypeName, error) {
 	exists := vt.ExistVar(varName)
 	if !exists {
@@ -73,64 +91,77 @@ func (vt *VarTable) GetVarType(varName VarName) (UdonTypeName, error) {
 	}
 	return retType.Name, nil
 }
-func (vt *VarTable) ValidVarType(varName VarName, assertVarType UdonTypeName) bool {
+
+// ValidVarType returns true if varName has type assertVarType
+// It checks if the variable exists
+// It pulls the UdonType struct out of the variable table and returns the type
+func (vt *VarTable) ValidVarType(varName VarName, assertVarType UdonTypeName) (bool, error) {
 	if !vt.ExistVar(varName) {
-		fmt.Println("type not defined:", varName)
-		return false
+		return false, fmt.Errorf("type not defined: %s", varName)
 	}
-	typeName, ok := vt.VarDict[varName]
-	if !ok {
-		fmt.Println("type not defined:", varName)
-		return false
+	typeName, err := vt.GetVarType(varName)
+	if err != nil {
+		return false, fmt.Errorf("type not defined: %s", varName)
 	}
-	return assertVarType == typeName.Name
+	return assertVarType == typeName, nil
 
 }
+
+// ExistVar returns true if varName is in the variable table
 func (vt *VarTable) ExistVar(varName VarName) bool {
-	_, ok := vt.VarDict[varName]
+	existing, ok := vt.VarDict[varName]
+	fmt.Println(varName, existing)
 	return ok
 }
+
+// MakeDataSeg generates the data block of the Udon Assembly
 func (vt *VarTable) MakeDataSeg() (string, error) {
-	data_str := ".data_start\n\n"
+	dataStr := ".data_start\n\n"
 	for _, varName := range vt.GlobalVarNames {
 		if !vt.ExistVar(varName) {
 			return "", errors.New("global var does not exist: " + string(varName))
 		}
-		data_str += fmt.Sprintf("    .export %s\n", varName)
+		dataStr += fmt.Sprintf("    .export %s\n", varName)
 	}
 
 	for k, v := range vt.VarDict {
 		if v.Name == "VRCUdonCommonInterfacesIUdonEventReceiver" {
-			data_str += fmt.Sprintf("    %s: %%VRCUdonUdonBehaviour, %s\n", k, v.InitialValue)
+			dataStr += fmt.Sprintf("    %s: %%VRCUdonUdonBehaviour, %s\n", k, v.InitialValue)
 		} else {
-			data_str += fmt.Sprintf("    %s: %%%s, %s\n", k, v.Name, v.InitialValue)
+			dataStr += fmt.Sprintf("    %s: %%%s, %s\n", k, v.Name, v.InitialValue)
 		}
 	}
-	data_str += "\n.data_end\n\n"
-	return data_str, nil
-}
-func (vt *VarTable) PrintDataSeg() {
-	fmt.Println(vt.MakeDataSeg())
+	dataStr += "\n.data_end\n\n"
+	return dataStr, nil
 }
 
+// FnKey is used to fetch the saved func from the funcmap
 type FnKey struct {
 	FuncName FuncName
 	ArgTypes string
 }
+
+// FnValue holds return types and var names from a funcmap
 type FnValue struct {
 	ReturnType UdonTypeName
 	ArgNames   []VarName
 }
-type Funcs map[FnKey]*FnValue
 
-func (f Funcs) Put(funcName FuncName, argTypes []UdonTypeName, value *FnValue) {
+// FuncMap is the funcmap, holding registered functions
+type FuncMap map[FnKey]*FnValue
+
+// Put will set or update the registered func in the funcmap
+func (f FuncMap) Put(funcName FuncName, argTypes []UdonTypeName, retType UdonTypeName, argNames []VarName) {
+	v := &FnValue{retType, argNames}
 	argsStr := []string{}
 	for _, argType := range argTypes {
 		argsStr = append(argsStr, string(argType))
 	}
-	f[FnKey{funcName, strings.Join(argsStr, ",")}] = value
+	f[FnKey{funcName, strings.Join(argsStr, ",")}] = v
 }
-func (f Funcs) Exists(funcName FuncName, argTypes []UdonTypeName) bool {
+
+// Exists returns true if the func is registered
+func (f FuncMap) Exists(funcName FuncName, argTypes []UdonTypeName) bool {
 	argsStr := []string{}
 	for _, argType := range argTypes {
 		argsStr = append(argsStr, string(argType))
@@ -139,7 +170,8 @@ func (f Funcs) Exists(funcName FuncName, argTypes []UdonTypeName) bool {
 	return ok
 }
 
-func (f Funcs) Get(funcName FuncName, argTypes []UdonTypeName) *FnValue {
+// Get returns the registered funcName from the funcmap
+func (f FuncMap) Get(funcName FuncName, argTypes []UdonTypeName) *FnValue {
 	argsStr := []string{}
 	for _, argType := range argTypes {
 		argsStr = append(argsStr, string(argType))
@@ -147,38 +179,22 @@ func (f Funcs) Get(funcName FuncName, argTypes []UdonTypeName) *FnValue {
 	return f[FnKey{funcName, strings.Join(argsStr, ",")}]
 }
 
-type DefFuncTable struct {
-	FuncDict Funcs
-}
-
-func NewDefFuncTable() *DefFuncTable {
-	return &DefFuncTable{Funcs{}}
-}
-
-func (ft *DefFuncTable) AddFunc(
-	funcName FuncName,
-	argTypes []UdonTypeName,
-	retType UdonTypeName,
-	argNames []VarName,
-) {
-	ft.FuncDict.Put(funcName, argTypes, &FnValue{retType, argNames})
-}
-func (ft *DefFuncTable) ExistFunc(funcName FuncName, argTypes []UdonTypeName) bool {
-	return ft.FuncDict.Exists(funcName, argTypes)
-}
-func (ft *DefFuncTable) GetRetType(funcName FuncName, argTypes []UdonTypeName) (UdonTypeName, error) {
+// GetRetType returns the type of function with signature funcName and argTypes
+func (f FuncMap) GetRetType(funcName FuncName, argTypes []UdonTypeName) (UdonTypeName, error) {
 	argsStr := []string{}
 	for _, argType := range argTypes {
 		argsStr = append(argsStr, string(argType))
 	}
-	exists := ft.FuncDict.Exists(funcName, argTypes)
+	exists := f.Exists(funcName, argTypes)
 	if !exists {
 		return "", fmt.Errorf("Function %s %s is not defined. Are the argument types correct?", funcName, strings.Join(argsStr, ","))
 	}
-	fn := ft.FuncDict.Get(funcName, argTypes)
+	fn := f.Get(funcName, argTypes)
 	return fn.ReturnType, nil
 }
-func (ft *DefFuncTable) GetFunctionId(funcName FuncName, argTypes []UdonTypeName) string {
+
+// GetFunctionID builds a string that represents the ID of that func given funcName and argTypes
+func (f FuncMap) GetFunctionID(funcName FuncName, argTypes []UdonTypeName) string {
 	argsStr := []string{}
 	for _, argType := range argTypes {
 		argsStr = append(argsStr, string(argType))
@@ -186,7 +202,10 @@ func (ft *DefFuncTable) GetFunctionId(funcName FuncName, argTypes []UdonTypeName
 	return fmt.Sprintf(`%s__%s}`, funcName, strings.Join(argsStr, "_"))
 }
 
-type UdonMethodMap map[MethodKey]*MethodValue
+// UdonMethodMap holds the methodmap of the assembler
+type MethodMap map[MethodKey]*MethodValue
+
+// MethodKey is used to build the key for the methodmap
 type MethodKey struct {
 	MethodKind UdonMethodKind
 	ModuleName UdonTypeName
@@ -194,6 +213,7 @@ type MethodKey struct {
 	ArgTypes   string
 }
 
+// NewMethodKey returns a new method key
 func NewMethodKey(
 	methodKind UdonMethodKind,
 	moduleName UdonTypeName,
@@ -212,12 +232,14 @@ func NewMethodKey(
 	}
 }
 
+// MethodValue maps to the external func
 type MethodValue struct {
 	TypeName  UdonTypeName
 	ExternStr string
 }
 
-func (umm UdonMethodMap) Put(
+// Put adds and updates the method to the methodmap
+func (umm MethodMap) Put(
 	methodKind UdonMethodKind,
 	moduleType UdonTypeName,
 	methodName UdonMethodName,
@@ -231,7 +253,9 @@ func (umm UdonMethodMap) Put(
 		argTypes,
 	)] = value
 }
-func (umm UdonMethodMap) Exists(
+
+// Exists returns true if key exists in the methodmap
+func (umm MethodMap) Exists(
 	methodKind UdonMethodKind,
 	moduleType UdonTypeName,
 	methodName UdonMethodName,
@@ -245,41 +269,39 @@ func (umm UdonMethodMap) Exists(
 	)]
 	return ok
 }
-func (umm UdonMethodMap) Get(
+
+// Get returns the method stored in the methodmap
+func (umm MethodMap) Get(
 	methodKind UdonMethodKind,
 	moduleType UdonTypeName,
 	methodName UdonMethodName,
 	argTypes []UdonTypeName,
-) *MethodValue {
-	return umm[NewMethodKey(
+) (*MethodValue, bool) {
+	v, ok := umm[NewMethodKey(
 		methodKind,
 		moduleType,
 		methodName,
 		argTypes,
 	)]
+	return v, ok
 }
 
-type UdonMethodTable struct {
-	UdonMethodDict UdonMethodMap
-}
-
-func NewUdonMethodTable(rdr io.Reader) (*UdonMethodTable, error) {
+// NewUdonMethodTable returns a methodmap that is prefilled with external methods
+func NewUdonMethodTable(rdr io.Reader) (MethodMap, error) {
 	methodMap, err := ParseExterns(rdr)
 	if err != nil {
 		return nil, fmt.Errorf("load method map: %w", err)
 	}
-	t := &UdonMethodTable{
-		UdonMethodDict: methodMap,
-	}
-	return t, nil
+	return methodMap, nil
 }
 
-func (umt *UdonMethodTable) GetRetTypeExternStr(
+// GetRetTypeExternStr returns the return type and external name of the method
+func (umm MethodMap) GetRetTypeExternStr(
 	methodKind UdonMethodKind,
 	udonModuleType UdonTypeName,
 	methodName UdonMethodName,
 	argTypes []UdonTypeName) (*MethodValue, error) {
-	exists := umt.UdonMethodDict.Exists(
+	exists := umm.Exists(
 		methodKind,
 		udonModuleType,
 		methodName,
@@ -288,11 +310,14 @@ func (umt *UdonMethodTable) GetRetTypeExternStr(
 	if !exists {
 		return nil, fmt.Errorf("method does not exist: %s", methodName)
 	}
-	method := umt.UdonMethodDict.Get(
+	method, ok := umm.Get(
 		methodKind,
 		udonModuleType,
 		methodName,
 		argTypes,
 	)
+	if !ok {
+		return nil, errors.New("method not in map")
+	}
 	return method, nil
 }

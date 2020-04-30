@@ -1,4 +1,4 @@
-package assembly
+package asm
 
 import (
 	"bufio"
@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
-func ParseExterns(rdr io.Reader) (UdonMethodMap, error) {
+func ParseExterns(rdr io.Reader) (MethodMap, error) {
 
 	scan := bufio.NewScanner(rdr)
 
-	result := UdonMethodMap{}
+	result := MethodMap{}
 	bad := 0
 	for scan.Scan() {
 		txt := scan.Text()

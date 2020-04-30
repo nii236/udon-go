@@ -1,4 +1,4 @@
-package assembly
+package asm
 
 var UdonTypes = map[VarName]UdonTypeName{
 	"AINavMeshAgentRef":                     "UnityEngineAINavMeshAgentRef",

@@ -1,4 +1,4 @@
-package assembly
+package asm
 
 const UdonTypeAINavMeshAgentRef = "UnityEngineAINavMeshAgentRef"
 const UdonTypeAINavMeshDataRef = "UnityEngineAINavMeshDataRef"

@@ -1,4 +1,4 @@
-package assembly
+package asm
 
 type ArgTuple struct {
 	UdonTypeName

@@ -1,4 +1,4 @@
-package assembly
+package asm
 
 import (
 	"fmt"
@@ -9,16 +9,16 @@ import (
 )
 
 type UdonAssembly struct {
-	ASM             string
-	ProgramCounter  Addr
-	IDCounter       int
-	LabelDict       map[LabelName]Addr
-	EventNames      []EventName
-	ExportVars      []VarName
-	VarTable        *VarTable
-	DefFuncTable    *DefFuncTable
-	UdonMethodTable *UdonMethodTable
-	EnvVars         []VarName
+	ASM            string
+	ProgramCounter Addr
+	IDCounter      int
+	LabelDict      map[LabelName]Addr
+	EventNames     []EventName
+	ExportVars     []VarName
+	VarTable       *VarTable
+	FuncTable      FuncMap
+	MethodTable    MethodMap
+	EnvVars        []VarName
 }
 
 func NewUdonAssembly(rdr io.Reader) (*UdonAssembly, error) {
@@ -27,16 +27,16 @@ func NewUdonAssembly(rdr io.Reader) (*UdonAssembly, error) {
 		return nil, fmt.Errorf("create udon method table: %w", err)
 	}
 	result := &UdonAssembly{
-		ASM:             "",
-		ProgramCounter:  0,
-		IDCounter:       0,
-		LabelDict:       map[LabelName]Addr{},
-		EventNames:      []EventName{},
-		ExportVars:      []VarName{},
-		VarTable:        NewVarTable(),
-		DefFuncTable:    NewDefFuncTable(),
-		UdonMethodTable: umt,
-		EnvVars:         []VarName{},
+		ASM:            "",
+		ProgramCounter: 0,
+		IDCounter:      0,
+		LabelDict:      map[LabelName]Addr{},
+		EventNames:     []EventName{},
+		ExportVars:     []VarName{},
+		VarTable:       NewVarTable(),
+		FuncTable:      FuncMap{},
+		MethodTable:    umt,
+		EnvVars:        []VarName{},
 	}
 	return result, nil
 }
@@ -169,18 +169,22 @@ func (ua *UdonAssembly) CallExtern(extern_str ExternStr, argVars []VarName) {
 	ua.Extern(extern_str)
 	return
 }
-func (ua *UdonAssembly) Assign(distVarName VarName, srcVarName VarName) {
+func (ua *UdonAssembly) Assign(distVarName VarName, srcVarName VarName) error {
 	// If the variable name on the right side is UdonTypeName,
 	// just set the type of the variable on the left.
 	existingVarType, srcVarNameexists := UdonTypes[srcVarName]
 	if srcVarNameexists {
 		ua.VarTable.AddVar(distVarName, existingVarType, "null")
-		return
+		return nil
 	}
-
-	srcVarType, err := ua.VarTable.GetVarType(srcVarName)
+	exists := ua.VarTable.ExistVar(distVarName)
+	// fmt.Println(distVarName, srcVarName, exists)
 	// If the left variable is undefined, define the variable.
-	if err != nil {
+	if !exists {
+		srcVarType, err := ua.VarTable.GetVarType(srcVarName)
+		if err != nil {
+			return fmt.Errorf("get srcVarType: %w", err)
+		}
 		ua.AddInstComment(fmt.Sprintf("Declare %s", distVarName))
 		ua.VarTable.AddVar(distVarName, srcVarType, "null")
 	}
@@ -188,7 +192,7 @@ func (ua *UdonAssembly) Assign(distVarName VarName, srcVarName VarName) {
 	ua.PushVar(srcVarName)
 	ua.PushVar(distVarName)
 	ua.Copy()
-	return
+	return nil
 }
 func (ua *UdonAssembly) SetBool(varName VarName, bool_num bool) {
 	ua.PushStr(fmt.Sprintf("%v", bool_num))
@@ -247,7 +251,7 @@ func (ua *UdonAssembly) CallDefFunc(func_name FuncName, arg_var_names []VarName)
 		}
 		arg_var_types = append(arg_var_types, varType)
 	}
-	retTypeName, err := ua.DefFuncTable.GetRetType(func_name, arg_var_types)
+	retTypeName, err := ua.FuncTable.GetRetType(func_name, arg_var_types)
 	if err != nil {
 		return nil, fmt.Errorf("Get return type: %w", err)
 	}
@@ -270,7 +274,7 @@ func (ua *UdonAssembly) CallDefFunc(func_name FuncName, arg_var_names []VarName)
 	//Push arguments
 	ua.PushVars(arg_var_names)
 	//goto func label
-	ua.JumpLabel(LabelName(ua.DefFuncTable.GetFunctionId(func_name, arg_var_types)))
+	ua.JumpLabel(LabelName(ua.FuncTable.GetFunctionID(func_name, arg_var_types)))
 	ua.AddLabelCurrentAddr(retCallLabel)
 	if retTypeName != UdonTypeName("Void") {
 		// pop ret_var_name
