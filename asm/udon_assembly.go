@@ -41,7 +41,11 @@ func NewUdonAssembly(rdr io.Reader) (*UdonAssembly, error) {
 	return result, nil
 }
 
+func Log(msg ...string) {
+
+}
 func (ua *UdonAssembly) AddInstComment(comment string) {
+	// ua.ASM += fmt.Sprintf("        #{%s}\n", comment)
 	return
 }
 func (ua *UdonAssembly) AddInst(bcodeSize Addr, inst string) {
@@ -63,6 +67,8 @@ func (ua *UdonAssembly) GetNextId(name string) VarName {
 	ua.IDCounter += 1
 	return VarName(ret_id)
 }
+
+// AddLabelCurrentAddr points the current program counter to this label
 func (ua *UdonAssembly) AddLabelCurrentAddr(label LabelName) {
 	ua.LabelDict[label] = ua.ProgramCounter
 	return
@@ -92,7 +98,7 @@ func (ua *UdonAssembly) PopVars(varNames []VarName) error {
 		stringVarNames = append(stringVarNames, string(varName))
 	}
 	ua.AddInstComment(fmt.Sprintf("Pops %s", strings.Join(stringVarNames, ",")))
-	for i := len(varNames) - 1; i > 0; i-- {
+	for i := len(varNames) - 1; i >= 0; i-- {
 		varName := varNames[i]
 		ua.PopVar(varName)
 	}
@@ -177,10 +183,10 @@ func (ua *UdonAssembly) Assign(distVarName VarName, srcVarName VarName) error {
 		ua.VarTable.AddVar(distVarName, existingVarType, "null")
 		return nil
 	}
-	exists := ua.VarTable.ExistVar(distVarName)
+	_, ok := ua.VarTable.Find(distVarName)
 	// fmt.Println(distVarName, srcVarName, exists)
 	// If the left variable is undefined, define the variable.
-	if !exists {
+	if !ok {
 		srcVarType, err := ua.VarTable.GetVarType(srcVarName)
 		if err != nil {
 			return fmt.Errorf("get srcVarType: %w", err)

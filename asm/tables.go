@@ -7,23 +7,39 @@ import (
 	"strings"
 )
 
+type VarItem struct {
+	VarName      VarName
+	TypeName     UdonTypeName
+	InitialValue string
+}
+
 // VarTable holds local, global variables and current function for contextual purposes
 type VarTable struct {
-	VarDict        map[VarName]*UdonTypeItem
+	VarDict        []*VarItem
 	GlobalVarNames []VarName
 	CurrentFuncID  *LabelName
 }
 
-// UdonTypeItem holds the type name and initial value of a variable
-type UdonTypeItem struct {
-	Name         UdonTypeName
-	InitialValue string
+// Find varName in the vartable
+func (vt *VarTable) Find(varName VarName) (*VarItem, bool) {
+	for _, item := range vt.VarDict {
+		if item.VarName == varName {
+			return item, true
+		}
+	}
+	return nil, false
 }
+
+// // UdonTypeItem holds the type name and initial value of a variable
+// type UdonTypeItem struct {
+// 	Name         UdonTypeName
+// 	InitialValue string
+// }
 
 // NewVarTable returns a new var table for the assembler
 func NewVarTable() *VarTable {
 	t := &VarTable{
-		VarDict:        map[VarName]*UdonTypeItem{},
+		VarDict:        []*VarItem{},
 		GlobalVarNames: []VarName{},
 		CurrentFuncID:  nil,
 	}
@@ -31,24 +47,27 @@ func NewVarTable() *VarTable {
 }
 
 // ResolveVarname returns the VarName for the current function, avoiding naming collisions across functions
-func (vt *VarTable) ResolveVarname(varName VarName) VarName {
+func (vt *VarTable) ResolveVarname(varName VarName) (VarName, error) {
 	tmpVarname := VarName(fmt.Sprintf("%s_%s", *vt.CurrentFuncID, varName))
-	_, exists := vt.VarDict[tmpVarname]
-	if vt.CurrentFuncID != nil && exists {
-		return tmpVarname
+	varItem, ok := vt.Find(varName)
+
+	// ignore missing entry, create new var
+	if vt.CurrentFuncID == nil && !ok {
+		return "", errors.New("nil current func ID and var does not exist")
 	}
-	return varName
-
-}
-
-// ClearCurrentFuncID will set the current func id to nil
-func (vt *VarTable) ClearCurrentFuncID(label LabelName) {
-	vt.CurrentFuncID = nil
+	if vt.CurrentFuncID != nil && !ok {
+		return tmpVarname, nil
+	}
+	return varItem.VarName, nil
 }
 
 // SetCurrentFuncID sets the current func ID for contextual execution
-func (vt *VarTable) SetCurrentFuncID(label LabelName) {
-	vt.CurrentFuncID = &label
+func (vt *VarTable) SetCurrentFuncID(label *LabelName) {
+	if label == nil {
+		vt.CurrentFuncID = nil
+		return
+	}
+	vt.CurrentFuncID = label
 }
 
 // AddVarGlobal adds varName to the global variables
@@ -64,39 +83,40 @@ func (vt *VarTable) AddVarGlobal(varName VarName) error {
 
 // AddVar adds varName to the variable table
 func (vt *VarTable) AddVar(varName VarName, typeName UdonTypeName, initValueStr string) error {
-	exists := vt.ExistVar(varName)
-	if exists {
+	_, ok := vt.Find(varName)
+	if ok {
 		return errors.New("variable already registered")
 	}
 	if typeName == UdonTypeName("Void") {
 		return errors.New("variable is void type")
 	}
-	vt.VarDict[varName] = &UdonTypeItem{typeName, initValueStr}
+	vt.VarDict = append(vt.VarDict, &VarItem{varName, typeName, initValueStr})
+
 	return nil
 }
 
 // GetVarType returns the UdonType of the varName if it exists
 func (vt *VarTable) GetVarType(varName VarName) (UdonTypeName, error) {
-	exists := vt.ExistVar(varName)
-	if !exists {
+	_, ok := vt.Find(varName)
+	if !ok {
 		savedUdonType, ok := UdonTypes[varName]
 		if !ok {
 			return "", fmt.Errorf("variable not defined: %s", varName)
 		}
 		return savedUdonType, nil
 	}
-	retType, ok := vt.VarDict[varName]
+	item, ok := vt.Find(varName)
 	if !ok {
 		return "", fmt.Errorf("variable not defined: %s", varName)
 	}
-	return retType.Name, nil
+	return item.TypeName, nil
 }
 
 // ValidVarType returns true if varName has type assertVarType
 // It checks if the variable exists
 // It pulls the UdonType struct out of the variable table and returns the type
 func (vt *VarTable) ValidVarType(varName VarName, assertVarType UdonTypeName) (bool, error) {
-	if !vt.ExistVar(varName) {
+	if _, ok := vt.Find(varName); !ok {
 		return false, fmt.Errorf("type not defined: %s", varName)
 	}
 	typeName, err := vt.GetVarType(varName)
@@ -107,28 +127,21 @@ func (vt *VarTable) ValidVarType(varName VarName, assertVarType UdonTypeName) (b
 
 }
 
-// ExistVar returns true if varName is in the variable table
-func (vt *VarTable) ExistVar(varName VarName) bool {
-	existing, ok := vt.VarDict[varName]
-	fmt.Println(varName, existing)
-	return ok
-}
-
 // MakeDataSeg generates the data block of the Udon Assembly
 func (vt *VarTable) MakeDataSeg() (string, error) {
 	dataStr := ".data_start\n\n"
 	for _, varName := range vt.GlobalVarNames {
-		if !vt.ExistVar(varName) {
+		if _, ok := vt.Find(varName); !ok {
 			return "", errors.New("global var does not exist: " + string(varName))
 		}
 		dataStr += fmt.Sprintf("    .export %s\n", varName)
 	}
 
-	for k, v := range vt.VarDict {
-		if v.Name == "VRCUdonCommonInterfacesIUdonEventReceiver" {
-			dataStr += fmt.Sprintf("    %s: %%VRCUdonUdonBehaviour, %s\n", k, v.InitialValue)
+	for _, v := range vt.VarDict {
+		if v.TypeName == "VRCUdonCommonInterfacesIUdonEventReceiver" {
+			dataStr += fmt.Sprintf("    %s: %%VRCUdonUdonBehaviour, %s\n", v.VarName, v.InitialValue)
 		} else {
-			dataStr += fmt.Sprintf("    %s: %%%s, %s\n", k, v.Name, v.InitialValue)
+			dataStr += fmt.Sprintf("    %s: %%%s, %s\n", v.VarName, v.TypeName, v.InitialValue)
 		}
 	}
 	dataStr += "\n.data_end\n\n"
@@ -194,15 +207,15 @@ func (f FuncMap) GetRetType(funcName FuncName, argTypes []UdonTypeName) (UdonTyp
 }
 
 // GetFunctionID builds a string that represents the ID of that func given funcName and argTypes
-func (f FuncMap) GetFunctionID(funcName FuncName, argTypes []UdonTypeName) string {
+func (f FuncMap) GetFunctionID(funcName FuncName, argTypes []UdonTypeName) LabelName {
 	argsStr := []string{}
 	for _, argType := range argTypes {
 		argsStr = append(argsStr, string(argType))
 	}
-	return fmt.Sprintf(`%s__%s}`, funcName, strings.Join(argsStr, "_"))
+	return LabelName(fmt.Sprintf(`%s__%s`, funcName, strings.Join(argsStr, "_")))
 }
 
-// UdonMethodMap holds the methodmap of the assembler
+// MethodMap holds the methodmap of the assembler
 type MethodMap map[MethodKey]*MethodValue
 
 // MethodKey is used to build the key for the methodmap

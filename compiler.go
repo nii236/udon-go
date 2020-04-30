@@ -10,18 +10,24 @@ import (
 	"udon-go/asm"
 )
 
-func handleDecls(uasm *asm.UdonAssembly, out io.Writer, d *ast.File) error {
+type Compiler struct {
+	CurrentFuncRetType   *asm.UdonTypeName
+	CurrentBreakLabel    *asm.LabelName
+	CurrentContinueLabel *asm.LabelName
+}
+
+func (c *Compiler) handleDecls(uasm *asm.UdonAssembly, out io.Writer, d *ast.File) error {
 	// fmt.Println("run: handleDecls")
 	var err error
 	for _, decl := range d.Decls {
 		switch decl := decl.(type) {
 		case *ast.GenDecl:
-			err = handleGenDecl(uasm, out, decl)
+			err = c.handleGenDecl(uasm, out, decl)
 			if err != nil {
 				return fmt.Errorf("handle generic declaration: %w", err)
 			}
 		case *ast.FuncDecl:
-			err = handleFuncDecl(uasm, out, decl)
+			err = c.handleFuncDecl(uasm, out, decl)
 			if err != nil {
 				return fmt.Errorf("handle func declaration: %w", err)
 			}
@@ -32,7 +38,7 @@ func handleDecls(uasm *asm.UdonAssembly, out io.Writer, d *ast.File) error {
 	return nil
 }
 
-func handleGenDecl(uasm *asm.UdonAssembly, out io.Writer, decl *ast.GenDecl) error {
+func (c *Compiler) handleGenDecl(uasm *asm.UdonAssembly, out io.Writer, decl *ast.GenDecl) error {
 	// fmt.Println("run: handleGenDecl")
 	for _, s := range decl.Specs {
 		switch spec := s.(type) {
@@ -76,41 +82,94 @@ func handleGenDecl(uasm *asm.UdonAssembly, out io.Writer, decl *ast.GenDecl) err
 	}
 	return nil
 }
-func handleFuncDecl(uasm *asm.UdonAssembly, out io.Writer, decl *ast.FuncDecl) error {
+
+func (c *Compiler) handleFuncDecl(uasm *asm.UdonAssembly, out io.Writer, decl *ast.FuncDecl) error {
 	// fmt.Println("run: handleFuncDecl")
+	funcName := asm.FuncName(decl.Name.Name)
 	argTypes := []asm.UdonTypeName{}
+
 	retTypes := []asm.UdonTypeName{}
 	argNames := []asm.VarName{}
+	uasm.EnvVars = argNames
+
+	for _, arg := range decl.Type.Params.List {
+		argTypes = append(argTypes, IdentToUnity(arg.Type.(*ast.Ident)))
+	}
+
+	funcLabel := uasm.FuncTable.GetFunctionID(funcName, argTypes)
+	uasm.VarTable.SetCurrentFuncID(&funcLabel)
+	uasm.AddLabelCurrentAddr(funcLabel)
 
 	for _, arg := range decl.Type.Params.List {
 		if len(arg.Names) > 1 {
 			return errors.New("multiple args to type not supported")
 		}
-		argTypes = append(argTypes, asm.UdonTypeName(fmt.Sprintf("%s", arg.Type)))
-		argNames = append(argNames, asm.VarName(fmt.Sprintf("%s", arg.Names[0])))
-	}
-	for _, ret := range decl.Type.Results.List {
-		retTypes = append(retTypes, asm.UdonTypeName(fmt.Sprintf("%s", ret.Type)))
+
+		resolvedVarName, err := uasm.VarTable.ResolveVarname(asm.VarName(arg.Names[0].Name))
+		if err != nil {
+			return fmt.Errorf("resolve var name: %w", err)
+		}
+		argNames = append(argNames, resolvedVarName)
 	}
 
+	if decl.Type.Results != nil && len(decl.Type.Results.List) > 0 {
+		for _, ret := range decl.Type.Results.List {
+			if ret.Tag == nil {
+				break
+			}
+			retTypes = append(retTypes, asm.UdonTypeName(fmt.Sprintf("%s", ret.Type)))
+		}
+	}
 	if len(retTypes) > 1 {
 		return errors.New("multiple returns not supported")
 	}
-	uasm.FuncTable.Put(asm.FuncName(decl.Name.Name), argTypes, retTypes[0], argNames)
+	udonReturnType := asm.GoNil
 
-	err := handleBlockStmt(uasm, out, decl.Body)
-	if err != nil {
-		return fmt.Errorf("handle block: %w", err)
+	if len(retTypes) > 0 {
+		udonReturnType = retTypes[0]
 	}
+
+	if udonReturnType != asm.GoNil {
+		c.CurrentFuncRetType = &udonReturnType
+	}
+
+	for i, varName := range argNames {
+		err := uasm.VarTable.AddVar(varName, argTypes[i], "null")
+		if err != nil {
+			return fmt.Errorf("add var: %w", err)
+		}
+	}
+	err := uasm.PopVars(argNames)
+	if err != nil {
+		return fmt.Errorf("pop vars: %w", err)
+	}
+	uasm.FuncTable.Put(funcName, argTypes, udonReturnType, argNames)
+
+	uasm.VarTable.SetCurrentFuncID(nil)
+	c.CurrentFuncRetType = nil
+
+	err = uasm.PopVar(asm.VarName("ret_addr"))
+	if err != nil {
+		return fmt.Errorf("pop vars: %w", err)
+	}
+	// err := c.handleBlockStmt(uasm, out, decl.Body)
+	// if err != nil {
+	// 	return fmt.Errorf("handle block: %w", err)
+	// }
+	uasm.JumpRetAddr()
+	uasm.EnvVars = []asm.VarName{}
+	uasm.VarTable.SetCurrentFuncID(nil)
+	c.CurrentFuncRetType = nil
+
 	return nil
 }
-func handleBlockStmt(uasm *asm.UdonAssembly, out io.Writer, bs *ast.BlockStmt) error {
+func (c *Compiler) handleBlockStmt(uasm *asm.UdonAssembly, out io.Writer, bs *ast.BlockStmt) error {
 
 	for _, s := range bs.List {
 		switch st := s.(type) {
 		case *ast.ExprStmt:
 			// fmt.Println("handle ast.ExprStmt")
-			_, err := handleExpr(uasm, out, st.X)
+			_, err := c.handleExpr(uasm, out, st.X)
 			if err != nil {
 				return fmt.Errorf("error handling expr: %v", err)
 			}
@@ -126,11 +185,11 @@ func handleBlockStmt(uasm *asm.UdonAssembly, out io.Writer, bs *ast.BlockStmt) e
 			lhs := st.Lhs[0]
 			rhs := st.Rhs[0]
 
-			lhsVarName, err := handleExpr(uasm, out, lhs)
+			lhsVarName, err := c.handleExpr(uasm, out, lhs)
 			if err != nil {
 				return fmt.Errorf("assign: left expr %v: %v", lhs, err)
 			}
-			rhsVarName, err := handleExpr(uasm, out, rhs)
+			rhsVarName, err := c.handleExpr(uasm, out, rhs)
 			if err != nil {
 				return fmt.Errorf("assign: right expr %v: %v", rhs, err)
 			}
@@ -146,7 +205,7 @@ func handleBlockStmt(uasm *asm.UdonAssembly, out io.Writer, bs *ast.BlockStmt) e
 				// tuple return
 				// TODO: Add checks for return type
 				for _, result := range st.Results {
-					retVarName, err := handleExpr(uasm, out, result)
+					retVarName, err := c.handleExpr(uasm, out, result)
 					if err != nil {
 						return fmt.Errorf("handle expr: %w", err)
 					}
@@ -155,7 +214,7 @@ func handleBlockStmt(uasm *asm.UdonAssembly, out io.Writer, bs *ast.BlockStmt) e
 			} else if len(st.Results) == 1 {
 				// standard return
 				// TODO: Add checks for return type
-				retVarName, err := handleExpr(uasm, out, st.Results[0])
+				retVarName, err := c.handleExpr(uasm, out, st.Results[0])
 				if err != nil {
 					return fmt.Errorf("handle expr: %w", err)
 				}
@@ -170,7 +229,7 @@ func handleBlockStmt(uasm *asm.UdonAssembly, out io.Writer, bs *ast.BlockStmt) e
 			elseLabel := asm.LabelName(uasm.GetNextId("else_label"))
 			ifEndLabel := asm.LabelName(uasm.GetNextId("if_end_label"))
 
-			condVarName, err := handleExpr(uasm, out, st.Cond)
+			condVarName, err := c.handleExpr(uasm, out, st.Cond)
 			if err != nil {
 				return fmt.Errorf("error handling if cond: %v", err)
 			}
@@ -179,7 +238,7 @@ func handleBlockStmt(uasm *asm.UdonAssembly, out io.Writer, bs *ast.BlockStmt) e
 			// if (!test) goto else
 			uasm.JumpIfFalseLabel(elseLabel)
 			// {}
-			err = handleBlockStmt(uasm, out, st.Body)
+			err = c.handleBlockStmt(uasm, out, st.Body)
 			if err != nil {
 				return fmt.Errorf("error handling if body: %v", err)
 			}
@@ -187,7 +246,7 @@ func handleBlockStmt(uasm *asm.UdonAssembly, out io.Writer, bs *ast.BlockStmt) e
 			uasm.JumpLabel(ifEndLabel)
 			// else:
 			uasm.AddLabelCurrentAddr(elseLabel)
-			err = handleBlockStmt(uasm, out, st.Else.(*ast.BlockStmt))
+			err = c.handleBlockStmt(uasm, out, st.Else.(*ast.BlockStmt))
 			if err != nil {
 				return fmt.Errorf("error handling else body: %v", err)
 			}
@@ -196,16 +255,17 @@ func handleBlockStmt(uasm *asm.UdonAssembly, out io.Writer, bs *ast.BlockStmt) e
 
 		case *ast.ForStmt:
 		default:
-			return fmt.Errorf("unsupported statement: %v", s)
+			fmt.Printf("unsupported statement: %v", s)
+			return nil
 		}
 	}
 	return nil
 }
 
-func handleCallExpr(uasm *asm.UdonAssembly, out io.Writer, c *ast.CallExpr) (asm.VarName, error) {
-	id := c.Fun.(*ast.Ident)
+func (c *Compiler) handleCallExpr(uasm *asm.UdonAssembly, out io.Writer, expr *ast.CallExpr) (asm.VarName, error) {
+	id := expr.Fun.(*ast.Ident)
 	argTypes := []asm.UdonTypeName{}
-	for _, arg := range c.Args {
+	for _, arg := range expr.Args {
 		switch a := arg.(type) {
 		case *ast.Ident:
 			typeName, err := uasm.VarTable.GetVarType(asm.VarName(a.Obj.Name))
@@ -221,28 +281,28 @@ func handleCallExpr(uasm *asm.UdonAssembly, out io.Writer, c *ast.CallExpr) (asm
 		}
 	}
 	uasm.FuncTable.GetFunctionID(asm.FuncName(id.Name), argTypes)
-	return "", fmt.Errorf("%s: %w", "CallExpr", ErrNotImplemented)
+	return "", nil
 }
 
-func handleBinaryExpr(uasm *asm.UdonAssembly, out io.Writer, be *ast.BinaryExpr) (asm.VarName, error) {
+func (c *Compiler) handleBinaryExpr(uasm *asm.UdonAssembly, out io.Writer, be *ast.BinaryExpr) (asm.VarName, error) {
 	return "", fmt.Errorf("%s: %w", "binaryExpr", ErrNotImplemented)
 }
 
-func handleUnaryExpr(uasm *asm.UdonAssembly, out io.Writer, ue *ast.UnaryExpr) (asm.VarName, error) {
+func (c *Compiler) handleUnaryExpr(uasm *asm.UdonAssembly, out io.Writer, ue *ast.UnaryExpr) (asm.VarName, error) {
 	return "", fmt.Errorf("%s: %w", "UnaryExpr", ErrNotImplemented)
 }
-func handleFuncType(uasm *asm.UdonAssembly, out io.Writer, lit *ast.FuncType) (asm.VarName, error) {
+func (c *Compiler) handleFuncType(uasm *asm.UdonAssembly, out io.Writer, lit *ast.FuncType) (asm.VarName, error) {
 	return "", fmt.Errorf("%s: %w", "FuncType", ErrNotImplemented)
 }
-func handleFuncLit(uasm *asm.UdonAssembly, out io.Writer, lit *ast.FuncLit) (asm.VarName, error) {
+func (c *Compiler) handleFuncLit(uasm *asm.UdonAssembly, out io.Writer, lit *ast.FuncLit) (asm.VarName, error) {
 	return "", fmt.Errorf("%s: %w", "FuncLit", ErrNotImplemented)
 }
-func handleIdent(uasm *asm.UdonAssembly, out io.Writer, ident *ast.Ident) (asm.VarName, error) {
+func (c *Compiler) handleIdent(uasm *asm.UdonAssembly, out io.Writer, ident *ast.Ident) (asm.VarName, error) {
 	constNextID := uasm.GetNextId(ident.Name)
 	return constNextID, nil
 }
 
-func handleBasicLit(uasm *asm.UdonAssembly, out io.Writer, lit *ast.BasicLit) (asm.VarName, error) {
+func (c *Compiler) handleBasicLit(uasm *asm.UdonAssembly, out io.Writer, lit *ast.BasicLit) (asm.VarName, error) {
 	constNextID := uasm.GetNextId("const")
 	if lit.Kind == token.INT {
 		uasm.VarTable.AddVar(constNextID, asm.UdonTypeInt32, lit.Value)
@@ -250,24 +310,24 @@ func handleBasicLit(uasm *asm.UdonAssembly, out io.Writer, lit *ast.BasicLit) (a
 	return constNextID, nil
 }
 
-func handleExpr(uasm *asm.UdonAssembly, out io.Writer, e ast.Expr) (asm.VarName, error) {
+func (c *Compiler) handleExpr(uasm *asm.UdonAssembly, out io.Writer, e ast.Expr) (asm.VarName, error) {
 	switch expr := e.(type) {
 	case *ast.Ident:
 		// fmt.Println("expr: Ident")
-		return handleIdent(uasm, out, expr)
+		return c.handleIdent(uasm, out, expr)
 	case *ast.FuncType:
 		// fmt.Println("expr: FuncType")
-		return handleFuncType(uasm, out, expr)
+		return c.handleFuncType(uasm, out, expr)
 	case *ast.FuncLit:
 		// fmt.Println("expr: FuncLit")
-		return handleFuncLit(uasm, out, expr)
+		return c.handleFuncLit(uasm, out, expr)
 	case *ast.CallExpr:
 		// fmt.Println("expr: CallExpr")
-		return handleCallExpr(uasm, out, expr)
+		return c.handleCallExpr(uasm, out, expr)
 	case *ast.BinaryExpr:
 		// fmt.Println("expr: BinaryExpr")
-		handleExpr(uasm, out, expr.X)
-		return handleExpr(uasm, out, expr.Y)
+		c.handleExpr(uasm, out, expr.X)
+		return c.handleExpr(uasm, out, expr.Y)
 	case *ast.CompositeLit:
 		// fmt.Println("expr: CompositeLit")
 	case *ast.UnaryExpr:
@@ -275,9 +335,10 @@ func handleExpr(uasm *asm.UdonAssembly, out io.Writer, e ast.Expr) (asm.VarName,
 		return "", fmt.Errorf("UnaryExpr: %w", ErrNotImplemented)
 	case *ast.BasicLit:
 		// fmt.Println("expr: BasicLit")
-		return handleBasicLit(uasm, out, expr)
+		return c.handleBasicLit(uasm, out, expr)
 	default:
-		return "", fmt.Errorf("%s: %w", expr, ErrNotImplemented)
+		fmt.Printf("unsupported expression: %v", expr)
+		return "", nil
 	}
 	return "", nil
 }

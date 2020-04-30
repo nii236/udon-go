@@ -7,13 +7,16 @@ import (
 	"go/token"
 	"io"
 	"os"
+	"strings"
 	"udon-go/asm"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 func main() {
 	// src is the input for which we want to print the AST.
 
-	f, err := os.Open("./assembly/udon_funcs_data.txt")
+	f, err := os.Open("./asm/udon_funcs_data.txt")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -29,7 +32,7 @@ func main() {
 		UASM: uasm,
 	}
 
-	srcFile, err := os.Open("./sample/sample.go")
+	srcFile, err := os.Open("./sample/func.go")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -59,17 +62,26 @@ func (uc *UdonCompiler) MakeUASMCode(w io.Writer, rdr io.Reader) (string, error)
 	if err != nil {
 		return "", nil
 	}
-
 	collectFuncs(uc.UASM, f)
-	uc.UASM.VarTable.AddVar(asm.VarName("ret_addr"), asm.UdonTypeUInt32, "0xFFFFFFFF")
-	uc.UASM.VarTable.AddVar(asm.VarName("this_trans"), asm.UdonTypeTransform, "this")
-	uc.UASM.VarTable.AddVar(asm.VarName("this_gameObj"), asm.UdonTypeGameObject, "this")
+	err = uc.UASM.VarTable.AddVar(asm.VarName("ret_addr"), asm.UdonTypeUInt32, "0xFFFFFFFF")
+	if err != nil {
+		return "", fmt.Errorf("add init vars: %w", err)
+	}
+	err = uc.UASM.VarTable.AddVar(asm.VarName("this_trans"), asm.UdonTypeTransform, "this")
+	if err != nil {
+		return "", fmt.Errorf("add init vars: %w", err)
+	}
+	err = uc.UASM.VarTable.AddVar(asm.VarName("this_gameObj"), asm.UdonTypeGameObject, "this")
+	if err != nil {
+		return "", fmt.Errorf("add init vars: %w", err)
+	}
 
-	err = handleDecls(uc.UASM, w, f)
+	c := &Compiler{}
+	err = c.handleDecls(uc.UASM, w, f)
 	if err != nil {
 		return "", fmt.Errorf("handle decls: %w", err)
 	}
-
+	spew.Dump(uc.UASM.VarTable.VarDict)
 	retCode := ""
 	dataSegment, err := uc.UASM.VarTable.MakeDataSeg()
 	if err != nil {
@@ -93,7 +105,10 @@ func collectFuncs(uasm *asm.UdonAssembly, fileNode *ast.File) {
 	v := &Visitor{uasm}
 	ast.Walk(v, fileNode)
 }
+
+// Visit each node for func collection
 func (v *Visitor) Visit(node ast.Node) ast.Visitor {
+	var err error
 	switch nt := node.(type) {
 	case *ast.FuncDecl:
 		argTypes := []asm.UdonTypeName{}
@@ -108,8 +123,13 @@ func (v *Visitor) Visit(node ast.Node) ast.Visitor {
 			argTypes = append(argTypes, asm.UdonTypeName(fmt.Sprintf("%s", arg.Type)))
 			argNames = append(argNames, asm.VarName(fmt.Sprintf("%s", arg.Names[0])))
 		}
-		for _, ret := range nt.Type.Results.List {
-			retTypes = append(retTypes, asm.UdonTypeName(fmt.Sprintf("%s", ret.Type)))
+		if nt.Type.Results != nil && len(nt.Type.Results.List) > 0 {
+			for _, ret := range nt.Type.Results.List {
+				if ret.Tag == nil {
+					break
+				}
+				retTypes = append(retTypes, TokenToUnity(ret.Tag.Kind))
+			}
 		}
 
 		if len(retTypes) > 1 {
@@ -117,7 +137,61 @@ func (v *Visitor) Visit(node ast.Node) ast.Visitor {
 			os.Exit(1)
 			return v
 		}
-		v.UASM.FuncTable.Put(asm.FuncName(nt.Name.Name), argTypes, retTypes[0], argNames)
+
+		if nt.Name.Name == "main" {
+			err = v.UASM.AddEvent(asm.EventName("_start"), argNames, argTypes)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		} else if strings.HasPrefix(nt.Name.Name, "_") {
+			err = v.UASM.AddEvent(asm.EventName(nt.Name.Name), argNames, argTypes)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		} else {
+			udonReturnType := asm.GoNil
+			if len(retTypes) > 0 {
+				udonReturnType = retTypes[0]
+			}
+			v.UASM.FuncTable.Put(asm.FuncName(nt.Name.Name), argTypes, udonReturnType, argNames)
+		}
+
 	}
 	return v
+}
+
+func TokenToUnity(kind token.Token) asm.UdonTypeName {
+	switch kind {
+	case token.INT:
+		return asm.GoInt
+
+	case token.FLOAT:
+		return asm.GoFloat32
+
+	case token.CHAR:
+		return asm.GoRune
+
+	case token.STRING:
+		return asm.GoString
+	}
+	panic("bad token")
+}
+
+func IdentToUnity(kind *ast.Ident) asm.UdonTypeName {
+	switch kind.Name {
+	case "int":
+		return asm.GoInt
+
+	case "float":
+		return asm.GoFloat32
+
+	case "char":
+		return asm.GoRune
+
+	case "string":
+		return asm.GoString
+	}
+	panic("bad token")
 }
